@@ -56,3 +56,7 @@ Releases are built by GitHub Actions ([.github/workflows/release.yml](.github/wo
 
 - **From GitHub:** Actions → Release → Run workflow, enter the new version (e.g. `1.0.1`). It updates `version_number` in `manifest.json`, commits, tags `v1.0.1` and publishes the release.
 - **From git:** set `version_number` in `manifest.json`, commit, then `git tag v1.0.1 && git push origin v1.0.1`. The workflow fails if the tag and manifest version differ.
+
+## License
+
+Dirt Autopilot is licensed under the [GNU General Public License v3.0](LICENSE).
