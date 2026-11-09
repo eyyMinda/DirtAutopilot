@@ -1,0 +1,31 @@
+{
+	"name": "DirtAutopilot",
+	"namespace": "eyyMinda",
+	"version_number": "1.0.0",
+	"description": "Automation helper: auto-sweeps ready tools, plays the Sand Mines timer and relic minigames, opens relics and chests, grabs the coffee bean, and protects legendary items. Settings in Options > Dirt Autopilot.",
+	"website_url": "https://github.com/eyyMinda/DirtAutopilot",
+	"dependencies": [],
+	"extra": {
+		"godot": {
+			"authors": [
+				"eyyMinda"
+			],
+			"tags": [
+				"automation",
+				"quality-of-life",
+				"helper"
+			],
+			"description_rich": "",
+			"optional_dependencies": [],
+			"load_before": [],
+			"incompatibilities": [],
+			"compatible_mod_loader_version": [
+				"7.0.1"
+			],
+			"compatible_game_version": [
+				"1.2.4"
+			],
+			"config_schema": {}
+		}
+	}
+}

@@ -1,0 +1,8 @@
+build/
+*.zip
+.godot/
+.import/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
