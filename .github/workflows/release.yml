@@ -70,8 +70,8 @@ jobs:
         run: |
           mkdir -p build
           ZIP="build/${MOD_ID}-${{ steps.ver.outputs.version }}.zip"
-          # Godot Mod Loader layout: mods-unpacked/<Namespace-Name>/...
-          git archive --format=zip --prefix="mods-unpacked/${MOD_ID}/" -o "$ZIP" "${{ steps.ver.outputs.tag }}"
+          # Zip layout: <Namespace-Name>/... (LICENSE, README and manifest included)
+          git archive --format=zip --prefix="${MOD_ID}/" -o "$ZIP" "${{ steps.ver.outputs.tag }}"
           unzip -l "$ZIP"
           echo "path=$ZIP" >> "$GITHUB_OUTPUT"
 

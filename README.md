@@ -22,7 +22,7 @@ Dirt Autopilot needs a mod loader. It works with both the Godot Mod Loader and D
 2. Download `eyyMinda-DirtAutopilot-<version>.zip` from the [latest release](https://github.com/eyyMinda/DirtAutopilot/releases/latest).
 3. Put the mod where your loader looks for mods:
    - **Godot Mod Loader:** put the `.zip` as-is in `<game folder>\mods\`.
-   - **DirtLoader:** extract the zip and move the `eyyMinda-DirtAutopilot` folder (inside `mods-unpacked`) into `<game folder>\mods\`.
+   - **DirtLoader:** extract the zip into `<game folder>\mods\`, so you get `<game folder>\mods\eyyMinda-DirtAutopilot\`.
 4. Start the game and open **Options → Dirt Autopilot**. With DirtLoader, **Options → Mods → Settings** opens the same page.
 
 ## Hotkeys
@@ -52,7 +52,7 @@ Delete the mod's folder or zip from `<game folder>\mods\`. To remove its setting
 
 ## Releasing (maintainers)
 
-Releases are built by GitHub Actions ([.github/workflows/release.yml](.github/workflows/release.yml)) and attached as `eyyMinda-DirtAutopilot-<version>.zip`, laid out as `mods-unpacked/eyyMinda-DirtAutopilot/` for the Godot Mod Loader.
+Releases are built by GitHub Actions ([.github/workflows/release.yml](.github/workflows/release.yml)) and attached as `eyyMinda-DirtAutopilot-<version>.zip`, containing the `eyyMinda-DirtAutopilot/` folder (the scripts, `manifest.json`, `README.md` and `LICENSE`).
 
 - **From GitHub:** Actions → Release → Run workflow, enter the new version (e.g. `1.0.1`). It updates `version_number` in `manifest.json`, commits, tags `v1.0.1` and publishes the release.
 - **From git:** set `version_number` in `manifest.json`, commit, then `git tag v1.0.1 && git push origin v1.0.1`. The workflow fails if the tag and manifest version differ.
