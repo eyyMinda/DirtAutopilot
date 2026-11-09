@@ -1,6 +1,6 @@
 # Dirt Autopilot
 
-An in-game automation helper for **Dirt Clicker**. It's the in-game successor to the [Dirt Sweeper](https://github.com/eyyMinda/Dirt-Sweeper) overlay. Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
+An in-game automation helper for **Dirt Clicker**. Website: [eyyminda.github.io/DirtAutopilot](https://eyyminda.github.io/DirtAutopilot/) · Download: [Nexus Mods](https://www.nexusmods.com/dirtclicker/mods/1) or [GitHub releases](https://github.com/eyyMinda/DirtAutopilot/releases/latest). It's the in-game successor to the [Dirt Sweeper](https://github.com/eyyMinda/Dirt-Sweeper) overlay. Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
 
 Everything is **off until you switch it on**, in **Options → Dirt Autopilot**.
 
@@ -16,7 +16,7 @@ Everything is **off until you switch it on**, in **Options → Dirt Autopilot**.
 
 ## Install
 
-Dirt Autopilot needs a mod loader. It works with both the Godot Mod Loader and DirtLoader from Nexus Mods.
+Dirt Autopilot needs a mod loader. It works with both [DirtLoader](https://www.nexusmods.com/games/dirtclicker/mods) from Nexus Mods and the [Godot Mod Loader](https://github.com/GodotModding/godot-mod-loader).
 
 1. Install your mod loader by following its own instructions.
 2. Download `eyyMinda-DirtAutopilot-<version>.zip` from the [latest release](https://github.com/eyyMinda/DirtAutopilot/releases/latest).

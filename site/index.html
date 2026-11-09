@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dirt Autopilot – in-game automation mod for Dirt Clicker</title>
+  <meta name="description" content="Free, open-source in-game mod for the Steam game Dirt Clicker (formerly Dirt Sweeper). Auto-sweeps ready tools, plays the Sand Mines timer for a PERFECT, solves relic minigames, opens relics and chests, and protects legendary items.">
+  <link rel="canonical" href="https://eyyminda.github.io/DirtAutopilot/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Dirt Autopilot – in-game automation mod for Dirt Clicker">
+  <meta property="og:description" content="Auto-sweeper, PERFECT Sand Mines timer, relic minigame solver, relic and chest opener, legendary protection and session stats. Works with DirtLoader or the Godot Mod Loader.">
+  <meta property="og:url" content="https://eyyminda.github.io/DirtAutopilot/">
+  <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6a1a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='2.5' fill='%23ff6a1a'/%3E%3C/svg%3E">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Dirt Autopilot",
+  "description": "In-game automation mod for the Steam game Dirt Clicker: auto-sweeper, Sand Mines timer, relic minigame solver, relic and chest opener, legendary protection and session stats.",
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Windows",
+  "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+  "url": "https://eyyminda.github.io/DirtAutopilot/",
+  "downloadUrl": "https://www.nexusmods.com/dirtclicker/mods/1",
+  "author": { "@type": "Person", "name": "eyyMinda", "url": "https://github.com/eyyMinda" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+  <style>
+    :root {
+      --bg: #f4f3f6;
+      --surface: #ffffff;
+      --text: #18171c;
+      --muted: #5d5b66;
+      --border: #e2e0e8;
+      --accent: #c44a08;
+      --accent-text: #ffffff;
+      color-scheme: light dark;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #16161b;
+        --surface: #1f1f26;
+        --text: #ececf0;
+        --muted: #a2a2b2;
+        --border: #34343f;
+        --accent: #ff6a1a;
+        --accent-text: #1a0d05;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.6 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    main, header, footer {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    header { padding-top: 56px; text-align: center; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 2px 12px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 2.75rem);
+      line-height: 1.15;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+    }
+
+    h2 { font-size: 1.5rem; margin: 56px 0 12px; }
+    h3 { font-size: 1.05rem; margin: 0 0 4px; }
+
+    .lead {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 24px;
+    }
+
+    a { color: var(--accent); }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    .btn small {
+      display: block;
+      font-weight: 400;
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    .note { color: var(--muted); font-size: 0.9rem; margin-top: 12px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .card p { margin: 0; color: var(--muted); }
+
+    .loader {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .loader p { flex: 1; }
+    .loader .btn { align-self: flex-start; }
+
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    ol.steps { padding-left: 1.25rem; }
+    ol.steps li { margin-bottom: 8px; }
+    ol.steps ul { margin: 6px 0 0; padding-left: 1.25rem; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    td { padding: 8px 14px; border-top: 1px solid var(--border); }
+    tr:first-child td { border-top: 0; }
+    td:first-child { width: 92px; }
+
+    kbd {
+      font: 600 0.85rem/1 Consolas, monospace;
+      padding: 4px 7px;
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      background: var(--bg);
+      white-space: nowrap;
+    }
+
+    code {
+      font: 0.88em Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 16px;
+    }
+
+    .callout p { margin: 0; }
+
+    details {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+    }
+
+    summary { cursor: pointer; font-weight: 600; }
+    details p { margin: 8px 0 0; color: var(--muted); }
+
+    footer {
+      padding-top: 48px;
+      padding-bottom: 40px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <span class="eyebrow">Formerly Dirt Sweeper</span>
+    <h1>Dirt Autopilot</h1>
+    <p class="lead">An in-game automation mod for the Steam game Dirt Clicker. It triggers ready tools without touching your mouse, plays the Sand Mines timer for a PERFECT, solves relic minigames, opens relics and chests, and more. Everything is off until you switch it on.</p>
+    <div class="buttons">
+      <a class="btn primary" href="https://www.nexusmods.com/dirtclicker/mods/1">Download on Nexus Mods<small>Free · works with DirtLoader or Godot Mod Loader</small></a>
+      <a class="btn" id="dl" href="https://github.com/eyyMinda/DirtAutopilot/releases/latest">Download from GitHub<small id="dl-info">Same zip, latest release</small></a>
+    </div>
+    <p class="note">Needs a mod loader: see <a href="#loaders">which one to pick</a>. Free and open source (GPL-3.0).</p>
+  </header>
+
+  <main>
+    <h2>What it does</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Auto-sweeper</h3>
+        <p>Moves the game's hover circle onto tools that are ready, as many per stop as possible. Your real mouse is never moved, and there's nothing to calibrate.</p>
+      </div>
+      <div class="card">
+        <h3>Sand Mines timer</h3>
+        <p>A PERFECT every round, and it can start the timer for you as soon as it's ready.</p>
+      </div>
+      <div class="card">
+        <h3>Relic minigames</h3>
+        <p>Solves them for you: words, math cards, dice and the rest, with an adjustable answer delay.</p>
+      </div>
+      <div class="card">
+        <h3>Relics &amp; items</h3>
+        <p>Opens your relics one at a time and protects legendary items from fox pals and Sell All.</p>
+      </div>
+      <div class="card">
+        <h3>Extras</h3>
+        <p>Grabs the coffee bean, opens chests you have the key for, and can skip relic and achievement popups.</p>
+      </div>
+      <div class="card">
+        <h3>Session stats</h3>
+        <p>Play time, dirt per hour, items, relics, minigames, coffee beans and chests since you started the game.</p>
+      </div>
+    </div>
+
+    <h2 id="loaders">Pick a mod loader</h2>
+    <p>Dirt Autopilot runs inside the game through a mod loader. It works with either of these, so install one first by following its own instructions.</p>
+    <div class="grid">
+      <div class="card loader">
+        <span class="tag">Easiest</span>
+        <h3>DirtLoader</h3>
+        <p>A mod loader made for Dirt Clicker, with a Mods page in the game's Options. Get it from Nexus Mods.</p>
+        <a class="btn" id="dirtloader" href="https://www.nexusmods.com/games/dirtclicker/mods">DirtLoader on Nexus Mods</a>
+      </div>
+      <div class="card loader">
+        <span class="tag">Alternative</span>
+        <h3>Godot Mod Loader</h3>
+        <p>The general mod loader for Godot games. Dirt Autopilot loads from its zip as-is.</p>
+        <a class="btn" href="https://github.com/GodotModding/godot-mod-loader">Godot Mod Loader on GitHub</a>
+      </div>
+    </div>
+
+    <h2>Install</h2>
+    <ol class="steps">
+      <li>Install your mod loader.</li>
+      <li>Download <code>eyyMinda-DirtAutopilot-&lt;version&gt;.zip</code> from <a href="https://www.nexusmods.com/dirtclicker/mods/1">Nexus Mods</a> or <a href="https://github.com/eyyMinda/DirtAutopilot/releases/latest">GitHub</a>.</li>
+      <li>Open your game folder: in your Steam Library, right-click <b>Dirt Clicker</b> → <b>Manage</b> → <b>Browse local files</b>. Then open the <code>mods</code> folder (create it if it isn't there).
+        <ul>
+          <li><b>DirtLoader:</b> extract the zip into <code>mods</code>, so you get <code>mods\eyyMinda-DirtAutopilot\</code>.</li>
+          <li><b>Godot Mod Loader:</b> put the zip in <code>mods</code> as it is.</li>
+        </ul>
+      </li>
+      <li>Start the game and open <b>Options → Dirt Autopilot</b>. With DirtLoader, <b>Options → Mods → Settings</b> opens the same page.</li>
+    </ol>
+
+    <div class="callout">
+      <p><b>Coming from the old Dirt Sweeper app?</b> Close <code>DirtSweeper.exe</code> and don't run it together with the mod, or both will try to sweep. You can delete the exe and <code>%LOCALAPPDATA%\DirtSweeper</code>; the mod doesn't use them.</p>
+    </div>
+
+    <h2>Hotkeys</h2>
+    <table>
+      <tr><td><kbd>F5</kbd></td><td>Auto-sweep on/off</td></tr>
+      <tr><td><kbd>F6</kbd></td><td>Sweep guides on/off: a dot on each ready tool, a ring where the sweeper is</td></tr>
+      <tr><td><kbd>F7</kbd></td><td>Sand Mines timer on/off</td></tr>
+      <tr><td><kbd>Insert</kbd></td><td>Show what's switched on, plus play time and dirt for this session</td></tr>
+      <tr><td><kbd>F9</kbd></td><td>Open or close the Dirt Autopilot settings</td></tr>
+    </table>
+    <p class="note">To change a key, click it in the <b>Hotkeys</b> section of the settings, then press the new one. Esc cancels and Backspace removes it.</p>
+
+    <h2>Questions</h2>
+    <details>
+      <summary>Is it safe to use?</summary>
+      <p>Dirt Autopilot only runs inside the game through your mod loader. It doesn't change any game files, never goes online and collects no data. The source code is public, and every release is built on GitHub.</p>
+    </details>
+    <details>
+      <summary>What about Steam achievements?</summary>
+      <p>DirtLoader turns Steam achievements off while mods are loaded, unless you enable them in <b>Options → Mods</b>. That's DirtLoader's setting, not this mod's.</p>
+    </details>
+    <details>
+      <summary>I can't sell my legendary items.</summary>
+      <p><b>Protect legendary items</b> locks them, so you can't sell them by hand either while it's on. Switch it off to sell them.</p>
+    </details>
+    <details>
+      <summary>Clicking a chest picks the wrong spot.</summary>
+      <p>While auto-sweep holds the circle on some tools, clicks in the field use the circle's position, not your mouse. Press <kbd>F5</kbd> to pause it.</p>
+    </details>
+    <details>
+      <summary>Some tools get skipped.</summary>
+      <p>Raise <b>Extra wait per spot</b> in the Auto-sweeper section. Otherwise leave it at 0.</p>
+    </details>
+    <details>
+      <summary>Where are my settings? How do I uninstall?</summary>
+      <p>Settings are saved in <code>%APPDATA%\Godot\app_userdata\Dirt Clicker\DirtAutopilot\</code>, and <b>Reset all settings</b> at the bottom of the settings page restores the defaults. To uninstall, delete the mod's folder or zip from the game's <code>mods</code> folder, and that settings folder if you want. Your save game is not affected.</p>
+    </details>
+    <details>
+      <summary>I found a bug or have an idea.</summary>
+      <p>Please <a href="https://github.com/eyyMinda/DirtAutopilot/issues">open an issue on GitHub</a> or post in the Bugs tab on <a href="https://www.nexusmods.com/dirtclicker/mods/1">Nexus Mods</a>. Mention your mod version (shown at the top of the settings page) and which mod loader you use.</p>
+    </details>
+  </main>
+
+  <footer>
+    <p>Dirt Autopilot by <a href="https://github.com/eyyMinda">eyyMinda</a> · <a href="https://www.nexusmods.com/dirtclicker/mods/1">Nexus Mods</a> · <a href="https://github.com/eyyMinda/DirtAutopilot">Source on GitHub</a> · <a href="https://github.com/eyyMinda/DirtAutopilot/releases">Releases</a> · <a href="https://buymeacoffee.com/eyyminda">Buy me a coffee</a> · GPL-3.0<br>Unofficial fan-made mod. Not affiliated with or endorsed by the developers of Dirt Clicker.</p>
+  </footer>
+
+  <script>
+    // Point the GitHub button straight at the latest release's zip; the release page stays the fallback.
+    fetch("https://api.github.com/repos/eyyMinda/DirtAutopilot/releases/latest")
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (release) {
+        release.assets.forEach(function (asset) {
+          if (/^eyyMinda-DirtAutopilot-.*\.zip$/.test(asset.name)) {
+            document.getElementById("dl").href = asset.browser_download_url;
+            document.getElementById("dl-info").textContent =
+              "Version " + release.tag_name.replace(/^v/, "") + " · " + Math.max(1, Math.round(asset.size / 1024)) + " KB zip";
+          }
+        });
+      })
+      .catch(function () { });
+  </script>
+</body>
+
+</html>
