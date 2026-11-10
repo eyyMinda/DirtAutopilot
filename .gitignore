@@ -7,3 +7,6 @@ build/
 Thumbs.db
 .DS_Store
 local/
+
+# Godot editor import files
+*.import

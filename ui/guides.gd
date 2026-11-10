@@ -26,8 +26,11 @@ func _draw() -> void:
 	if !is_instance_valid(sweeper.cursor):
 		return
 	var rc: float = sweeper.cursor_radius()
-	for it in sweeper.ready_tools(Time.get_ticks_msec(), rc):
-		draw_circle(it.pos, 4.0, COL_READY)
+	# While auto-sweep runs it already scans every frame; reuse that list.
+	var ready: Array = sweeper.last_ready if sweeper.enabled else sweeper.ready_tools(Time.get_ticks_msec(), rc)
+	for it in ready:
+		if is_instance_valid(it.tool) and !it.tool.is_triggered:
+			draw_circle(it.pos, 4.0, COL_READY)
 	if sweeper.holding:
 		draw_arc(sweeper.target, rc, 0.0, TAU, 64, COL_RING, 2.0)
 		for t in sweeper.covered:

@@ -2,6 +2,8 @@ extends Node
 ## All automations except the sweeper. They only call the game's own functions
 ## and signals (no script extensions), so they work under any mod loader.
 
+const Hats := preload("hats.gd")
+
 signal relic_opened
 signal chest_opened
 
@@ -10,6 +12,13 @@ signal chest_opened
 const TIMER_STOP_AT_SEC := 0.05
 ## Same hold time as opening a relic by hand.
 const RELIC_OPEN_SEC := 1.0
+## Pause before answering a relic minigame, so it's visible what was solved.
+const MG_ANSWER_DELAY_MSEC := 500
+## Automations that don't need frame timing run this often; inventories and
+## the world are walked far less in a busy late game.
+const TICK_SEC := 0.1
+## Pause before each hat, so the hat picker has appeared and the confetti is visible.
+const HAT_DELAY_MSEC := 600
 
 var s
 
@@ -17,6 +26,9 @@ var _mg_scene: Node
 var _mg_answer_at_msec := 0
 var _locked_by_us: Dictionary = {}
 var _sell_all_swapped := false
+var _hat_at_msec := 0
+var _tick_t := 0.0
+var _credit_names: Array[String] = []
 
 
 func setup(settings) -> void:
@@ -29,16 +41,21 @@ func _ready() -> void:
 	process_priority = 1000
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if !GM.is_app_init:
 		return
 	_update_sell_all_guard()
 	if !GM.is_playing():
 		return
+	# Frame-exact: the timer must stop within ±0.1 s.
 	if s.get_value("timer_game"):
 		_play_timer_game()
 	if s.get_value("relic_mg_solve"):
 		_solve_relic_minigame()
+	_tick_t -= delta
+	if _tick_t > 0.0:
+		return
+	_tick_t = TICK_SEC
 	if s.get_value("coffee_click"):
 		_grab_coffee()
 	if s.get_value("chests_open"):
@@ -49,6 +66,10 @@ func _process(_delta: float) -> void:
 		_protect_legendary()
 	if s.get_value("relics_open"):
 		_open_relic()
+	if s.get_value("hats_place"):
+		_place_hat()
+	if s.get_value("sand_auto"):
+		_spend_sand()
 
 
 func _on_setting_changed(key: String) -> void:
@@ -65,7 +86,7 @@ func _play_timer_game() -> void:
 	if g.playing:
 		if g.sm_game_state == SandGameController.GameState.TIMER_RUNNING and g.time_sec_left <= TIMER_STOP_AT_SEC:
 			g.timer_input_stop()
-	elif s.get_value("timer_game_auto_start") and g.playable and GM.sand.is_unlocked:
+	elif g.playable and GM.sand.is_unlocked:
 		g.game_start()
 
 
@@ -81,7 +102,7 @@ func _solve_relic_minigame() -> void:
 	var now := Time.get_ticks_msec()
 	if _mg_scene != mg:
 		_mg_scene = mg
-		_mg_answer_at_msec = now + int(s.get_value("relic_mg_delay_ms"))
+		_mg_answer_at_msec = now + MG_ANSWER_DELAY_MSEC
 	if now >= _mg_answer_at_msec and !mg.input_locked:
 		mg.line_edit.text = mg.answer_correct
 		mg._request_answer_check(mg.answer_correct)
@@ -119,6 +140,77 @@ func _skip_popup() -> void:
 	var is_achievement: bool = badges.badge_is_meta(icon.badge_key)
 	if s.get_value("skip_popup_achievements" if is_achievement else "skip_popup_relics"):
 		badges.input_close()
+
+
+## Bought hats wait in the hat picker until a pal is chosen. This picks a free
+## pal the hat helps (features/hats.gd), names it and confirms, the same as
+## clicking the pal, typing a name and pressing Enter.
+func _place_hat() -> void:
+	var hm = GM.ui.hat_mode
+	var que: Array[String] = GM.hat.hats_que
+	if !is_instance_valid(hm) or !hm.is_active or que.is_empty():
+		_hat_at_msec = 0
+		return
+	var now := Time.get_ticks_msec()
+	if _hat_at_msec == 0:
+		_hat_at_msec = now + HAT_DELAY_MSEC
+	if now < _hat_at_msec:
+		return
+	# The player is naming a pal themselves.
+	if hm.line_edit.has_focus():
+		return
+
+	var free := {}
+	for sel in hm.all_selections:
+		if !is_instance_valid(sel) or sel.is_queued_for_deletion() or sel.is_disabled:
+			continue
+		if !is_instance_valid(sel.node_world) or sel.node_world.hat_enabled:
+			continue
+		var pal: String = sel.node_world.node_data.key
+		if !free.has(pal):
+			free[pal] = sel
+
+	for i in que.size():
+		var pref = s.get_value("hat_" + que[i])
+		for pal in Hats.pal_order(que[i], pref if pref is String else Hats.BEST_FIT):
+			if !free.has(pal):
+				continue
+			_hat_at_msec = now + HAT_DELAY_MSEC
+			if i > 0:
+				# The picker only offers the first hat in the queue, so bring this one forward.
+				for _n in i:
+					que.push_back(que.pop_front())
+				hm.toggle_start()
+				return
+			free[pal].on_pressed.emit()
+			hm.line_edit.text = _new_pal_name()
+			hm.toggle_confirm()
+			return
+
+
+func _new_pal_name() -> String:
+	if _credit_names.is_empty():
+		_credit_names = Hats.credit_names()
+	var taken := {}
+	for guy in get_tree().get_nodes_in_group("GUY"):
+		if !str(guy.nametag).is_empty():
+			taken[str(guy.nametag).to_upper()] = true
+	return Hats.pick_name(taken, _credit_names)
+
+
+## Sand only flows into upgrades that are switched on (focused) in the Sand Mines panel.
+func _spend_sand() -> void:
+	var sand = GM.sand
+	if !is_instance_valid(sand) or !sand.active:
+		return
+	var open := []
+	for slot in sand.slots:
+		if !slot.is_locked and !slot.is_max_level:
+			open.append(slot)
+	for slot in sand.slots:
+		var want := open.has(slot)
+		if slot.is_focused != want and is_instance_valid(slot.ui_sand_slot):
+			slot.ui_sand_slot._set_focus(want)
 
 
 ## One relic at a time, with the game's own progress bar. Minigame relics only

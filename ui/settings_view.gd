@@ -4,6 +4,9 @@ extends VBoxContainer
 
 const Settings := preload("../core/settings.gd")
 const Icons := preload("icons.gd")
+const Hats := preload("../features/hats.gd")
+const StatsView := preload("stats_view.gd")
+const AchievementsView := preload("achievements_view.gd")
 
 const NEXUS_URL := "https://www.nexusmods.com/profile/eyyMinda"
 const GITHUB_URL := "https://github.com/eyyMinda"
@@ -19,9 +22,10 @@ var s
 
 var _rows: Dictionary = {}
 var _desc_labels: Array[Label] = []
-var _stats_grid: GridContainer
-var _stats_values: Array[Label] = []
+var _stats_view: StatsView
+var _achievements_view: AchievementsView
 var _reset_btn: Button
+var _update_btn: Button
 var _reset_armed_until := 0
 var _rebinding := ""
 var _refresh_t := 0.0
@@ -42,8 +46,8 @@ func setup(mod_main) -> void:
 			_add_hotkey(e)
 		elif e.default is bool:
 			_add_switch(e)
-		else:
-			_add_slider(e)
+		elif e.default is String:
+			_add_choice(e)
 
 	s.changed.connect(_on_changed)
 	visibility_changed.connect(_cancel_rebind)
@@ -131,32 +135,28 @@ func _add_switch(e: Dictionary) -> void:
 	_rows[e.key] = {"control": b, "block": block.get_parent() if e.has("requires") else block}
 
 
-func _add_slider(e: Dictionary) -> void:
+func _add_choice(e: Dictionary) -> void:
 	var block := _block(e)
 	var row := HBoxContainer.new()
 	var l := Label.new()
-	l.text = e.label
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var hat: Dictionary = Hats.HATS[e.hat]
+	l.text = "%s (%s)" % [hat.name, hat.effect]
+	var options: Array = Hats.options(e.hat)
 	row.add_child(l)
-	var sl := HSlider.new()
-	sl.min_value = e.min
-	sl.max_value = e.max
-	sl.step = e.step
-	sl.custom_minimum_size = Vector2(120, 0)
-	sl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	sl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	sl.focus_mode = Control.FOCUS_NONE
-	sl.value_changed.connect(func(val: float): s.set_value(e.key, int(val)))
-	row.add_child(sl)
-	var v := Label.new()
-	v.custom_minimum_size = Vector2(72, 0)
-	v.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	v.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	row.add_child(v)
+	var ob := OptionButton.new()
+	ob.custom_minimum_size = Vector2(150, 0)
+	ob.focus_mode = Control.FOCUS_NONE
+	for o in options:
+		ob.add_item(o[1])
+		ob.set_item_metadata(ob.item_count - 1, o[0])
+	ob.item_selected.connect(func(i: int): s.set_value(e.key, ob.get_item_metadata(i)))
+	row.add_child(ob)
 	block.add_child(row)
 	_add_desc(block, e.get("desc", ""))
-	_rows[e.key] = {"control": sl, "value_label": v, "block": block.get_parent() if e.has("requires") else block}
+	_rows[e.key] = {"control": ob, "block": block.get_parent() if e.has("requires") else block}
 
 
 func _add_hotkey(e: Dictionary) -> void:
@@ -180,6 +180,11 @@ func _add_view_title() -> void:
 	add_child(title)
 	if !mod.version.is_empty():
 		add_child(_faint_label("v" + mod.version, true))
+	_update_btn = _button("", _open_update)
+	_update_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_update_btn.icon = Icons.texture(Icons.GITHUB, Color.WHITE, 20)
+	_update_btn.visible = false
+	add_child(_update_btn)
 
 
 func _add_view_enable_all() -> void:
@@ -192,23 +197,15 @@ func _add_view_enable_all() -> void:
 
 
 func _add_view_stats() -> void:
-	_stats_grid = GridContainer.new()
-	_stats_grid.columns = 2
-	_stats_grid.add_theme_constant_override("h_separation", 16)
-	for r in mod.stats.rows():
-		var name_l := Label.new()
-		name_l.text = r[0]
-		name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		name_l.modulate = Color(1, 1, 1, 0.8)
-		var value_l := Label.new()
-		value_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		_stats_grid.add_child(name_l)
-		_stats_grid.add_child(value_l)
-		_stats_values.append(value_l)
-	add_child(_stats_grid)
-	var b := _button("Reset stats", _on_reset_stats)
-	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	add_child(b)
+	_stats_view = StatsView.new()
+	_stats_view.setup(mod.stats, _on_reset_stats)
+	add_child(_stats_view)
+
+
+func _add_view_achievements() -> void:
+	_achievements_view = AchievementsView.new()
+	_achievements_view.setup(mod.achievements, s)
+	add_child(_achievements_view)
 
 
 func _add_view_hotkey_help() -> void:
@@ -259,16 +256,16 @@ func _refresh_all() -> void:
 		elif e.default is bool:
 			r.control.set_pressed_no_signal(v)
 			r.control.text = _switch_label(e)
-		else:
-			r.control.set_value_no_signal(v)
-			r.value_label.text = "%d %s" % [v, e.get("unit", "")]
+		elif e.default is String:
+			var ob: OptionButton = r.control
+			ob.select(0)
+			for i in ob.item_count:
+				if ob.get_item_metadata(i) == v:
+					ob.select(i)
 		if e.has("requires"):
 			var on: bool = s.get_value(e.requires)
 			r.block.modulate.a = 1.0 if on else 0.45
-			if r.control is BaseButton:
-				r.control.disabled = !on
-			elif r.control is Range:
-				r.control.editable = on
+			r.control.disabled = !on
 	_refresh_live()
 
 
@@ -280,13 +277,21 @@ func _switch_label(e: Dictionary) -> String:
 
 
 func _refresh_live() -> void:
-	if _stats_grid:
-		var rows: Array = mod.stats.rows()
-		for i in mini(rows.size(), _stats_values.size()):
-			_stats_values[i].text = rows[i][1]
+	if _stats_view:
+		_stats_view.refresh()
+	if _achievements_view:
+		_achievements_view.refresh()
+	if _update_btn and !mod.updates.latest_version.is_empty():
+		_update_btn.text = "Update to v%s" % mod.updates.latest_version
+		_update_btn.tooltip_text = mod.updates.latest_url
+		_update_btn.visible = true
 	if _reset_btn and _reset_armed_until > 0 and Time.get_ticks_msec() > _reset_armed_until:
 		_reset_armed_until = 0
 		_reset_btn.text = "Reset all settings"
+
+
+func _open_update() -> void:
+	OS.shell_open(mod.updates.latest_url)
 
 
 func _on_reset_stats() -> void:

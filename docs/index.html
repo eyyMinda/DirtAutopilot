@@ -5,12 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dirt Autopilot – in-game automation mod for Dirt Clicker</title>
-  <meta name="description" content="Free, open-source in-game mod for the Steam game Dirt Clicker (formerly Dirt Sweeper). Auto-sweeps ready tools, plays the Sand Mines timer for a PERFECT, solves relic minigames, opens relics and chests, and protects legendary items.">
+  <meta name="description" content="Free, open-source in-game mod for the Steam game Dirt Clicker. Auto-sweeps ready tools, plays the Sand Mines timer for a PERFECT, spends sand, solves relic minigames, opens relics and chests, puts hats on pals and shows your next milestone.">
   <link rel="canonical" href="https://eyyminda.github.io/DirtAutopilot/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Dirt Autopilot – in-game automation mod for Dirt Clicker">
-  <meta property="og:description" content="Auto-sweeper, PERFECT Sand Mines timer, relic minigame solver, relic and chest opener, legendary protection and session stats. Works with DirtLoader or the Godot Mod Loader.">
+  <meta property="og:description" content="Auto-sweeper, PERFECT Sand Mines timer, relic minigame solver, relic and chest opener, hats on pals, next-milestone bar, prestige alert and session stats. Works with DirtLoader or the Godot Mod Loader.">
   <meta property="og:url" content="https://eyyminda.github.io/DirtAutopilot/">
+  <meta property="og:image" content="https://eyyminda.github.io/DirtAutopilot/images/main.jpg">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff6a1a' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='2.5' fill='%23ff6a1a'/%3E%3C/svg%3E">
   <script type="application/ld+json">
@@ -18,7 +20,8 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Dirt Autopilot",
-  "description": "In-game automation mod for the Steam game Dirt Clicker: auto-sweeper, Sand Mines timer, relic minigame solver, relic and chest opener, legendary protection and session stats.",
+  "description": "In-game automation mod for the Steam game Dirt Clicker: auto-sweeper, Sand Mines timer and sand spending, relic minigame solver, relic and chest opener, hats on pals, legendary protection, next-milestone bar, prestige alert and session stats.",
+  "screenshot": "https://eyyminda.github.io/DirtAutopilot/images/main.jpg",
   "applicationCategory": "GameApplication",
   "operatingSystem": "Windows",
   "license": "https://www.gnu.org/licenses/gpl-3.0.html",
@@ -147,6 +150,32 @@
 
     .card p { margin: 0; color: var(--muted); }
 
+    .shot {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 24px 0 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    figure { margin: 0; }
+    figure .shot { margin: 0; }
+
+    figcaption {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 8px;
+      text-align: center;
+    }
+
     .loader {
       display: flex;
       flex-direction: column;
@@ -230,9 +259,9 @@
 
 <body>
   <header>
-    <span class="eyebrow">Formerly Dirt Sweeper</span>
+    <span class="eyebrow">Free mod for Dirt Clicker</span>
     <h1>Dirt Autopilot</h1>
-    <p class="lead">An in-game automation mod for the Steam game Dirt Clicker. It triggers ready tools without touching your mouse, plays the Sand Mines timer for a PERFECT, solves relic minigames, opens relics and chests, and more. Everything is off until you switch it on.</p>
+    <p class="lead">An in-game automation mod for the Steam game Dirt Clicker. It triggers ready tools without touching your mouse, plays the Sand Mines timer for a PERFECT, solves relic minigames, opens relics and chests, puts hats on your pals, and more. You choose what's on in the game's Options.</p>
     <div class="buttons">
       <a class="btn primary" href="https://www.nexusmods.com/dirtclicker/mods/1">Download on Nexus Mods<small>Free · works with DirtLoader or Godot Mod Loader</small></a>
       <a class="btn" id="dl" href="https://github.com/eyyMinda/DirtAutopilot/releases/latest">Download from GitHub<small id="dl-info">Same zip, latest release</small></a>
@@ -241,6 +270,8 @@
   </header>
 
   <main>
+    <img class="shot" style="margin-top: 40px" src="images/main.jpg" width="1920" height="1080" alt="Dirt Autopilot in a run: the prestige alert naming the best upgrade to buy, pals named after people from the game's credits, and the next-milestone bar in the bottom-left">
+
     <h2>What it does</h2>
     <div class="grid">
       <div class="card">
@@ -248,25 +279,69 @@
         <p>Moves the game's hover circle onto tools that are ready, as many per stop as possible. Your real mouse is never moved, and there's nothing to calibrate.</p>
       </div>
       <div class="card">
-        <h3>Sand Mines timer</h3>
-        <p>A PERFECT every round, and it can start the timer for you as soon as it's ready.</p>
-      </div>
-      <div class="card">
-        <h3>Relic minigames</h3>
-        <p>Solves them for you: words, math cards, dice and the rest, with an adjustable answer delay.</p>
+        <h3>Sand Mines</h3>
+        <p>Plays the timer for a PERFECT every round and starts it whenever it's ready. Spends your sand on all upgrades at once.</p>
       </div>
       <div class="card">
         <h3>Relics &amp; items</h3>
-        <p>Opens your relics one at a time and protects legendary items from fox pals and Sell All.</p>
+        <p>Solves relic minigames (words, math cards, dice and the rest), opens your relics one at a time, and protects legendary items from fox pals and Sell All.</p>
+      </div>
+      <div class="card">
+        <h3>Hats on pals</h3>
+        <p>Puts each new hat on a pal it actually helps, or the pal you pick per hat. Pals get names from the game's credits, starting with Todd for the achievement.</p>
       </div>
       <div class="card">
         <h3>Extras</h3>
         <p>Grabs the coffee bean, opens chests you have the key for, and can skip relic and achievement popups.</p>
       </div>
       <div class="card">
-        <h3>Session stats</h3>
-        <p>Play time, dirt per hour, items, relics, minigames, coffee beans and chests since you started the game.</p>
+        <h3>Performance</h3>
+        <p>Optional FPS savers for the late game: dirt and worms land on the counter at once instead of flying there, and dig effects can be hidden.</p>
       </div>
+      <div class="card">
+        <h3>Progress</h3>
+        <p>A bar in the bottom-left shows your next chest or relic and how close you are. A prestige alert tells you when prestiging buys more upgrades, and the advisor marks the best one to buy.</p>
+      </div>
+      <div class="card">
+        <h3>Achievements</h3>
+        <p>A checklist of the game's achievements with your progress, which feature earns each one, and one-click help for the cookie and volume ones.</p>
+      </div>
+      <div class="card">
+        <h3>Session stats</h3>
+        <p>Tiles with play time, dirt and worms earned, rates per hour, tools, relics, minigames, sand, coffee, chests, hats, prestiges and achievements since you started the game.</p>
+      </div>
+      <div class="card">
+        <h3>Update alerts</h3>
+        <p>When a new version is out, an alert in the game links to the download page.</p>
+      </div>
+    </div>
+
+    <h2>In the game</h2>
+    <div class="gallery">
+      <figure>
+        <img class="shot" src="images/autosweep.jpg" width="1920" height="1080" loading="lazy" alt="The hover circle held on a group of ready tools by auto-sweep, with the green sweep guides">
+        <figcaption>Auto-sweep on a group of ready tools</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/timer-minigame.jpg" width="1920" height="1082" loading="lazy" alt="The Sand Mines panel showing PERFECT at 00.00 after the mod stopped the timer">
+        <figcaption>The Sand Mines timer stopped at 00.00: PERFECT</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/settings.jpg" width="1920" height="1080" loading="lazy" alt="The Dirt Autopilot tab in the game's Options with the Auto-sweeper and Sand Mines switches">
+        <figcaption>Every setting in Options → Dirt Autopilot</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/extras.jpg" width="1920" height="1080" loading="lazy" alt="The Extras section: coffee bean, chests, popup skipping and a pal picker for every hat">
+        <figcaption>Extras, with a pal picker for every hat</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/performance.jpg" width="1920" height="1080" loading="lazy" alt="The Performance, Progress and Achievements sections, with a Do it button next to the Dragoon achievement">
+        <figcaption>Performance, Progress and Achievements</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/session-stats.jpg" width="1920" height="1080" loading="lazy" alt="Session stats as tiles: play time, dirt earned, dirt per hour, worms, tools, items, relics, sand, coffee, chests, hats and prestiges">
+        <figcaption>Session stats</figcaption>
+      </figure>
     </div>
 
     <h2 id="loaders">Pick a mod loader</h2>
@@ -299,10 +374,6 @@
       <li>Start the game and open <b>Options → Dirt Autopilot</b>. With DirtLoader, <b>Options → Mods → Settings</b> opens the same page.</li>
     </ol>
 
-    <div class="callout">
-      <p><b>Coming from the old Dirt Sweeper app?</b> Close <code>DirtSweeper.exe</code> and don't run it together with the mod, or both will try to sweep. You can delete the exe and <code>%LOCALAPPDATA%\DirtSweeper</code>; the mod doesn't use them.</p>
-    </div>
-
     <h2>Hotkeys</h2>
     <table>
       <tr><td><kbd>F5</kbd></td><td>Auto-sweep on/off</td></tr>
@@ -312,11 +383,15 @@
       <tr><td><kbd>F9</kbd></td><td>Open or close the Dirt Autopilot settings</td></tr>
     </table>
     <p class="note">To change a key, click it in the <b>Hotkeys</b> section of the settings, then press the new one. Esc cancels and Backspace removes it.</p>
+    <img class="shot" src="images/hotkeys.jpg" width="1920" height="1082" loading="lazy" alt="The Hotkeys section of the Dirt Autopilot settings: Auto-sweep F5, Sweep guides F6, Sand Mines timer F7, Show what's on Insert, Open these settings F9">
+
+    <h2>What's on from the start</h2>
+    <p>Most features are off until you switch them on. These start on: <b>sweep guides</b>, <b>spending sand</b>, <b>legendary protection</b>, <b>hats on pals</b>, the <b>next-milestone bar</b> and the <b>prestige alert</b>. <b>Enable all</b> and <b>Disable all</b> at the top of the settings switch everything at once.</p>
 
     <h2>Questions</h2>
     <details>
       <summary>Is it safe to use?</summary>
-      <p>Dirt Autopilot only runs inside the game through your mod loader. It doesn't change any game files, never goes online and collects no data. The source code is public, and every release is built on GitHub.</p>
+      <p>Dirt Autopilot only runs inside the game through your mod loader. It doesn't change any game files and collects no data. The only time it goes online is once when the game starts, to ask GitHub whether there's a newer version. The source code is public, and every release is built on GitHub.</p>
     </details>
     <details>
       <summary>What about Steam achievements?</summary>
@@ -331,8 +406,12 @@
       <p>While auto-sweep holds the circle on some tools, clicks in the field use the circle's position, not your mouse. Press <kbd>F5</kbd> to pause it.</p>
     </details>
     <details>
-      <summary>Some tools get skipped.</summary>
-      <p>Raise <b>Extra wait per spot</b> in the Auto-sweeper section. Otherwise leave it at 0.</p>
+      <summary>A hat isn't going on any pal.</summary>
+      <p><b>Put hats on pals</b> never puts a hat on a pal it does nothing for. If none of the right pals is free, the hat stays in the hat picker until you place it or buy a suitable pal.</p>
+    </details>
+    <details>
+      <summary>The game gets slow late in a run.</summary>
+      <p>Switch on <b>Skip flying dirt and worms</b> and <b>Hide dig effects</b> in the Performance section. Turning off the game's own CRT effect in Options and the mod's sweep guides (<kbd>F6</kbd>) helps too.</p>
     </details>
     <details>
       <summary>Where are my settings? How do I uninstall?</summary>
