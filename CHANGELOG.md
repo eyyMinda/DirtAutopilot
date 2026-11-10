@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+- **Spend sand on upgrades:** picks which Sand Mines upgrades to fill, so you don't have to click them. All upgrades fill at once.
+- Settings: the Sand Mines timer and sand upgrades now share a **Sand Mines** section; the relic minigame solver moved to **Relics & items**.
+
 ## 1.0.5
 - **Hat preferences:** each hat goes on a pal it actually helps. For example, hard hats skip pals that don't dig, such as the Druid and the Dirt golem, and antenna hats go to stomping pals like the Frog. Every hat has a dropdown to pick which pal gets it first, or leave it on **Best fit**. If no suitable pal is free, the hat waits for you.
 
