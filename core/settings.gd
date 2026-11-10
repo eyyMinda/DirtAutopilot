@@ -5,18 +5,47 @@ signal changed(key: String)
 const PATH := "user://DirtAutopilot/settings.json"
 ## Where settings were saved before the mod was renamed from Dirt Sweeper.
 const LEGACY_PATH := "user://DirtSweeper/settings.json"
-## Bump when keys are renamed, and add the renames to MIGRATIONS.
-const VERSION := 3
+## Bump when keys are renamed (add them to MIGRATIONS) or a saved value must
+## go back to its default (RESETS).
+const VERSION := 5
 
 ## Settings in display order; the settings screen and hotkeys are built from this.
-## Entries: {section}, {view} (custom block in settings_view.gd), or a setting:
+## Entries: {group} (big heading over several sections), {section}, {view}
+## (custom block in settings_view.gd), or a setting:
 ##   bool default = switch, hotkey: true (int keycode) = key,
 ##   String default = dropdown of pals for hat (a key from features/hats.gd).
+## Sections: fold: true = collapsible card with a header switch: "switch": key,
+##   else one for all of its switches, else none.
 ## Optional: desc, requires (parent switch), hotkey_of (key that flips this switch),
 ##   all: false (left out of "Enable all").
 const SCHEMA: Array[Dictionary] = [
 	{"view": "title"},
 	{"view": "enable_all"},
+
+	# Up top: one row while closed, and the first thing to reach for late game.
+	{"section": "Performance", "fold": true},
+	{"key": "perf_no_particles", "default": false, "all": false,
+		"label": "Skip flying dirt and worms",
+		"desc": "Dirt and worms land on your counter at once instead of flying there. The biggest FPS saver late in the game."},
+	{"key": "perf_no_effects", "default": false, "all": false,
+		"label": "Hide dig effects",
+		"desc": "No dust puffs, zap lines or item pops when tools trigger."},
+	{"key": "perf_hide_buffs", "default": false, "all": false,
+		"label": "Hide buff icons",
+		"desc": "The buff timers above tools and pals. Buffs still work."},
+	{"key": "perf_hide_stomps", "default": false, "all": false,
+		"label": "Hide stomp circles",
+		"desc": "The rings pals and tools draw when they stomp or hand out buffs."},
+	{"key": "perf_hide_names", "default": false, "all": false,
+		"label": "Hide pal names"},
+	{"key": "perf_hide_sell_pops", "default": false, "all": false,
+		"label": "Hide sell amounts",
+		"desc": "The dirt/worms numbers that pop up over items in the inventory when they sell."},
+	{"key": "perf_hide_new_counts", "default": false, "all": false,
+		"label": "Hide new item counts",
+		"desc": "The bouncing +N on inventory items you haven't hovered yet."},
+
+	{"group": "Automations"},
 
 	{"section": "Auto-sweeper"},
 	{"key": "sweep_enabled", "default": false, "hotkey_of": "key_sweep",
@@ -33,26 +62,21 @@ const SCHEMA: Array[Dictionary] = [
 		"label": "Spend sand on upgrades",
 		"desc": "Fills every sand upgrade, so you don't have to click them."},
 
-	{"section": "Relics & items"},
+	{"section": "Relics"},
 	{"key": "relic_mg_solve", "default": false,
 		"label": "Solve relic minigames",
 		"desc": "Words, math cards, dice and the rest."},
 	{"key": "relics_open", "default": false,
 		"label": "Open relics",
 		"desc": "Relics with a minigame are only opened while \"Solve relic minigames\" is on."},
-	{"key": "protect_legendary", "default": true,
-		"label": "Protect legendary items",
-		"desc": "Fox pals and Sell All leave them alone. You can't sell them by hand while this is on."},
 
-	{"section": "Extras"},
+	{"section": "Pickups"},
 	{"key": "coffee_click", "default": false,
 		"label": "Grab the coffee bean"},
 	{"key": "chests_open", "default": false,
 		"label": "Open chests when you have the key"},
-	{"key": "skip_popup_relics", "default": false,
-		"label": "Skip relic popups"},
-	{"key": "skip_popup_achievements", "default": false,
-		"label": "Skip achievement popups"},
+
+	{"section": "Hats on pals", "fold": true, "switch": "hats_place"},
 	{"key": "hats_place", "default": true,
 		"label": "Put hats on pals",
 		"desc": "Each new hat goes on a pal it helps, picked below, and the pal is named after someone from the credits. If none of those pals is free, the hat waits for you."},
@@ -64,39 +88,39 @@ const SCHEMA: Array[Dictionary] = [
 	{"key": "hat_HAT_IDLE_REDUCE", "default": "", "hat": "HAT_IDLE_REDUCE", "requires": "hats_place"},
 	{"key": "hat_HAT_BUFF_TIME", "default": "", "hat": "HAT_BUFF_TIME", "requires": "hats_place"},
 
-	{"section": "Performance"},
-	{"key": "perf_no_particles", "default": false, "all": false,
-		"label": "Skip flying dirt and worms",
-		"desc": "Dirt and worms land on your counter at once instead of flying there. The biggest FPS saver late in the game."},
-	{"key": "perf_no_effects", "default": false, "all": false,
-		"label": "Hide dig effects",
-		"desc": "No dust puffs, zap lines or item pops when tools trigger."},
+	{"group": "Quality of life"},
 
 	{"section": "Progress"},
 	{"key": "milestone_bar", "default": true,
 		"label": "Show the next milestone",
-		"desc": "A bar in the bottom-left with the next chest or relic. Hover it for details."},
+		"desc": "A bar under your dirt per second with the next chest or relic. Hover it for details."},
 	{"key": "prestige_alert", "default": true,
 		"label": "Prestige alert",
 		"desc": "Lets you know when prestiging would let you buy more prestige upgrades."},
 
-	{"section": "Achievements"},
+	{"section": "Items & popups"},
+	{"key": "protect_legendary", "default": true,
+		"label": "Protect legendary items",
+		"desc": "Fox pals and Sell All leave them alone. You can't sell them by hand while this is on."},
+	{"key": "skip_popup_relics", "default": false,
+		"label": "Skip relic popups"},
+	{"key": "skip_popup_achievements", "default": false,
+		"label": "Skip achievement popups"},
+
+	{"section": "Achievements", "fold": true},
 	{"view": "achievements"},
 
-	{"section": "Session stats"},
-	{"view": "stats"},
+	{"group": "Setup"},
 
 	{"section": "Hotkeys"},
 	{"key": "key_sweep", "default": KEY_F5, "hotkey": true, "label": "Auto-sweep"},
 	{"key": "key_guides", "default": KEY_F6, "hotkey": true, "label": "Sweep guides"},
 	{"key": "key_timer", "default": KEY_F7, "hotkey": true, "label": "Sand Mines timer"},
-	{"key": "key_status", "default": KEY_INSERT, "hotkey": true, "label": "Show what's on"},
+	{"key": "key_stats", "default": KEY_C, "hotkey": true, "label": "Session stats tab"},
 	{"key": "key_settings", "default": KEY_F9, "hotkey": true, "label": "Open these settings"},
 	{"view": "hotkey_help"},
 
 	{"section": "General"},
-	{"key": "toasts", "default": true, "all": false,
-		"label": "Show hotkey messages"},
 	{"view": "reset"},
 
 	{"view": "credits"},
@@ -110,6 +134,10 @@ const MIGRATIONS := {
 	"coffee_auto": "coffee_click",
 	"chests_auto": "chests_open",
 }
+
+## Keys whose saved value is dropped when the file is older than the version:
+## key_stats was Insert in pre-release 1.1.3 builds, now C.
+const RESETS := {"key_stats": 5}
 
 var values: Dictionary = {}
 var dirty := false
@@ -163,6 +191,18 @@ func set_all_features(on: bool) -> void:
 		set_value(key, on)
 
 
+## Switches between a section header and the next one.
+func section_keys(title: String) -> Array[String]:
+	var out: Array[String] = []
+	var inside := false
+	for e in SCHEMA:
+		if e.has("section") or e.has("group"):
+			inside = e.get("section", "") == title
+		elif inside and e.has("key") and e.default is bool and !e.get("hotkey", false):
+			out.append(e.key)
+	return out
+
+
 func hotkey_keys() -> Array[String]:
 	var out: Array[String] = []
 	for e in SCHEMA:
@@ -190,6 +230,10 @@ func load_file() -> String:
 		for old in MIGRATIONS:
 			if data.has(old) and !data.has(MIGRATIONS[old]):
 				data[MIGRATIONS[old]] = data[old]
+
+	for key in RESETS:
+		if int(data.get("version", 1)) < RESETS[key]:
+			data.erase(key)
 
 	for key in _entries:
 		if !data.has(key):

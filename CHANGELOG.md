@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.5
+- **Settings reorganised** into **Automations**, **Quality of life** and **Setup**. Performance sits right at the top. "Protect legendary items" and the popup skips moved to Quality of life, and coffee and chests are now under **Pickups**.
+- **Collapsible cards:** Performance, Hats on pals and Achievements open and close with a click, and their main switch and status ("3/7 on", "On", "12/40 unlocked") stay visible while closed. Performance has one switch for all of its options.
+
 ## 1.1.4
 - **Session stats tab:** session stats moved out of the settings into their own tab, after Badges in the game's tab column, laid out to fit the side panel. Open or close it with **C** (hover the tab to see the key).
 - Removed the Insert status message and the "Show hotkey messages" setting. Hotkey messages always show.
