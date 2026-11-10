@@ -27,6 +27,8 @@ var _mg_answer_at_msec := 0
 var _locked_by_us: Dictionary = {}
 var _sell_all_swapped := false
 var _hat_at_msec := 0
+var _guarded_count := -1
+var _popup_hooked: Object
 var _tick_t := 0.0
 var _credit_names: Array[String] = []
 
@@ -45,6 +47,8 @@ func _process(delta: float) -> void:
 	if !GM.is_app_init:
 		return
 	_update_sell_all_guard()
+	_guard_stacks()
+	_hook_popup()
 	if !GM.is_playing():
 		return
 	# Frame-exact: the timer must stop within ±0.1 s.
@@ -56,6 +60,8 @@ func _process(delta: float) -> void:
 	if _tick_t > 0.0:
 		return
 	_tick_t = TICK_SEC
+	# A stack swapped for another in the same frame keeps the size; re-check now and then.
+	_guarded_count = -1
 	if s.get_value("coffee_click"):
 		_grab_coffee()
 	if s.get_value("chests_open"):
@@ -127,6 +133,26 @@ func _open_chests() -> void:
 		if chest.is_unlocked and chest.visible and !chest.ap.is_playing():
 			GM.chest.chest_input(chest)
 			chest_opened.emit()
+
+
+## The popup opens synchronously inside BadgesController.input_unlock(), so
+## polling closed it a few frames late (a visible flash). Its on_toggle_on fires
+## during that call; the badge key is set by a deferred call queued just before
+## (setup_badge), so a deferred check sees the key and closes the popup before
+## the frame is drawn. The tick's _skip_popup() stays as a fallback.
+func _hook_popup() -> void:
+	if !is_instance_valid(GM.badges):
+		return
+	var popup = GM.badges.ui_badge_unlock
+	if !is_instance_valid(popup) or popup == _popup_hooked:
+		return
+	_popup_hooked = popup
+	popup.on_toggle_on.connect(_on_popup_shown)
+
+
+func _on_popup_shown() -> void:
+	if s.get_value("skip_popup_relics") or s.get_value("skip_popup_achievements"):
+		_skip_popup.call_deferred()
 
 
 func _skip_popup() -> void:
@@ -216,9 +242,6 @@ func _spend_sand() -> void:
 ## One relic at a time, with the game's own progress bar. Minigame relics only
 ## while the solver is on, so a minigame never pops up unexpectedly.
 func _open_relic() -> void:
-	for st: ItemStack in GM.inv.item_stacks:
-		if st.is_relic:
-			_guard_stack_delete(st)
 	if GM.mini_games.playing or GM.badges.ui_reward_active:
 		return
 	for st: ItemStack in GM.inv.item_stacks:
@@ -235,18 +258,24 @@ func _open_relic() -> void:
 		return
 
 
-## Game bug workaround: opening the last relic of a stack runs from a timer, and
-## the stack is deleted at the start of the next frame. ItemStack._inv_delete()
-## nulls action_load before its inventory icon is freed, so the icon's _process
-## (ui_item.gd: action_load.get_progress_perc()) hits null. on_deleted is emitted
-## first in _inv_delete, so stopping the icon there closes the gap.
-func _guard_stack_delete(st: ItemStack) -> void:
-	var cb := _on_relic_stack_deleted.bind(st)
-	if !st.on_deleted.is_connected(cb):
-		st.on_deleted.connect(cb, CONNECT_ONE_SHOT)
+## Game bug workaround: when the last item of a stack goes from a timer (relic
+## opening, hold-to-sell, fox pals), the stack is deleted at the start of the
+## next frame. ItemStack._inv_delete() nulls action_load before its inventory
+## icon is freed, so the icon's _process (ui_item.gd: action_load.
+## get_progress_perc()) hits null. on_deleted is emitted first in _inv_delete,
+## so stopping the icon there closes the gap. Every stack gets the guard; the
+## list is only walked when its size changes.
+func _guard_stacks() -> void:
+	if !is_instance_valid(GM.inv) or GM.inv.item_stacks.size() == _guarded_count:
+		return
+	_guarded_count = GM.inv.item_stacks.size()
+	for st: ItemStack in GM.inv.item_stacks:
+		if !st.has_meta("dap_del_guard"):
+			st.set_meta("dap_del_guard", true)
+			st.on_deleted.connect(_on_stack_deleted.bind(st), CONNECT_ONE_SHOT)
 
 
-func _on_relic_stack_deleted(st: ItemStack) -> void:
+func _on_stack_deleted(st: ItemStack) -> void:
 	if is_instance_valid(st.ui_item):
 		st.ui_item.set_process(false)
 

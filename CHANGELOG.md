@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.6
+- **Relic and achievement popups are skipped without a flash:** with "Skip relic popups" or "Skip achievement popups" on, the popup is closed before it's ever drawn, instead of showing for a split second.
+- Fixed an error in the log when the last item of a stack was sold by holding it, sold by a fox pal or opened as a relic (a game bug the mod now works around for every item, not only relics).
+
 ## 1.1.5
 - **Settings reorganised** into **Automations**, **Quality of life** and **Setup**. Performance sits right at the top. "Protect legendary items" and the popup skips moved to Quality of life, and coffee and chests are now under **Pickups**.
 - **Collapsible cards:** Performance, Hats on pals and Achievements open and close with a click, and their main switch and status ("3/7 on", "On", "12/40 unlocked") stay visible while closed. Performance has one switch for all of its options.

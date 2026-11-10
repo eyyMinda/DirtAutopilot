@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dirt Autopilot – in-game automation mod for Dirt Clicker</title>
-  <meta name="description" content="Free, open-source in-game mod for the Steam game Dirt Clicker. Auto-sweeps ready tools, plays the Sand Mines timer for a PERFECT, spends sand, solves relic minigames, opens relics and chests, puts hats on pals and shows your next milestone.">
+  <meta name="description" content="Free in-game mod for the Steam game Dirt Clicker. Auto-sweeps ready tools, plays the Sand Mines timer for a PERFECT, spends sand, solves relic minigames, opens relics and chests, puts hats on pals, adds a session stats tab and FPS savers for the late game.">
   <link rel="canonical" href="https://eyyminda.github.io/DirtAutopilot/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Dirt Autopilot – in-game automation mod for Dirt Clicker">
-  <meta property="og:description" content="Auto-sweeper, PERFECT Sand Mines timer, relic minigame solver, relic and chest opener, hats on pals, next-milestone bar, prestige alert and session stats. Works with DirtLoader or the Godot Mod Loader.">
+  <meta property="og:description" content="Auto-sweeper, PERFECT Sand Mines timer, relic minigame solver, relic and chest opener, hats on pals, next-milestone bar, prestige alert, session stats tab and FPS savers. Works with DirtLoader or the Godot Mod Loader.">
   <meta property="og:url" content="https://eyyminda.github.io/DirtAutopilot/">
   <meta property="og:image" content="https://eyyminda.github.io/DirtAutopilot/images/main.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -20,7 +20,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Dirt Autopilot",
-  "description": "In-game automation mod for the Steam game Dirt Clicker: auto-sweeper, Sand Mines timer and sand spending, relic minigame solver, relic and chest opener, hats on pals, legendary protection, next-milestone bar, prestige alert and session stats.",
+  "description": "In-game automation mod for the Steam game Dirt Clicker: auto-sweeper, Sand Mines timer and sand spending, relic minigame solver, relic and chest opener, hats on pals, legendary protection, next-milestone bar, prestige alert, session stats tab and FPS savers.",
   "screenshot": "https://eyyminda.github.io/DirtAutopilot/images/main.jpg",
   "applicationCategory": "GameApplication",
   "operatingSystem": "Windows",
@@ -261,16 +261,16 @@
   <header>
     <span class="eyebrow">Free mod for Dirt Clicker</span>
     <h1>Dirt Autopilot</h1>
-    <p class="lead">An in-game automation mod for the Steam game Dirt Clicker. It triggers ready tools without touching your mouse, plays the Sand Mines timer for a PERFECT, solves relic minigames, opens relics and chests, puts hats on your pals, and more. You choose what's on in the game's Options.</p>
+    <p class="lead">An in-game automation mod for the Steam game Dirt Clicker. It triggers ready tools without touching your mouse, plays the Sand Mines timer for a PERFECT, solves relic minigames, opens relics and chests, puts hats on your pals, and keeps the late game smooth with FPS savers. You choose what's on in the game's Options.</p>
     <div class="buttons">
       <a class="btn primary" href="https://www.nexusmods.com/dirtclicker/mods/1">Download on Nexus Mods<small>Free · works with DirtLoader or Godot Mod Loader</small></a>
       <a class="btn" id="dl" href="https://github.com/eyyMinda/DirtAutopilot/releases/latest">Download from GitHub<small id="dl-info">Same zip, latest release</small></a>
     </div>
-    <p class="note">Needs a mod loader: see <a href="#loaders">which one to pick</a>. Free and open source (GPL-3.0).</p>
+    <p class="note">Needs a mod loader: see <a href="#loaders">which one to pick</a>. Free (GPL-3.0).</p>
   </header>
 
   <main>
-    <img class="shot" style="margin-top: 40px" src="images/main.jpg" width="1920" height="1080" alt="Dirt Autopilot in a run: the prestige alert naming the best upgrade to buy, pals named after people from the game's credits, and the next-milestone bar in the bottom-left">
+    <img class="shot" style="margin-top: 40px" src="images/main.jpg" width="1920" height="1080" alt="Dirt Autopilot in a run: the prestige alert naming the best upgrade to buy, pals named after people from the game's credits, and the next-milestone bar">
 
     <h2>What it does</h2>
     <div class="grid">
@@ -283,24 +283,28 @@
         <p>Plays the timer for a PERFECT every round and starts it whenever it's ready. Spends your sand on all upgrades at once.</p>
       </div>
       <div class="card">
-        <h3>Relics &amp; items</h3>
-        <p>Solves relic minigames (words, math cards, dice and the rest), opens your relics one at a time, and protects legendary items from fox pals and Sell All.</p>
+        <h3>Relics</h3>
+        <p>Solves relic minigames (words, math cards, dice and the rest) and opens your relics one at a time.</p>
+      </div>
+      <div class="card">
+        <h3>Pickups</h3>
+        <p>Grabs the coffee bean and opens chests you have the key for.</p>
       </div>
       <div class="card">
         <h3>Hats on pals</h3>
         <p>Puts each new hat on a pal it actually helps, or the pal you pick per hat. Pals get names from the game's credits, starting with Todd for the achievement.</p>
       </div>
       <div class="card">
-        <h3>Extras</h3>
-        <p>Grabs the coffee bean, opens chests you have the key for, and can skip relic and achievement popups.</p>
-      </div>
-      <div class="card">
         <h3>Performance</h3>
-        <p>Optional FPS savers for the late game: dirt and worms land on the counter at once instead of flying there, and dig effects can be hidden.</p>
+        <p>FPS savers for the late game, with one switch for all of them: dirt and worms land on the counter at once instead of flying there, and dig effects, buff icons, stomp circles, pal names, sell amounts and new-item counts can be hidden.</p>
       </div>
       <div class="card">
         <h3>Progress</h3>
-        <p>A bar in the bottom-left shows your next chest or relic and how close you are. A prestige alert tells you when prestiging buys more upgrades, and the advisor marks the best one to buy.</p>
+        <p>A bar under your dirt per second shows your next chest or relic and how close you are. A prestige alert tells you when prestiging buys more upgrades, and the advisor marks the best one to buy.</p>
+      </div>
+      <div class="card">
+        <h3>Items &amp; popups</h3>
+        <p>Protects legendary items from fox pals and Sell All, and skips relic and achievement popups before they're even drawn.</p>
       </div>
       <div class="card">
         <h3>Achievements</h3>
@@ -308,7 +312,7 @@
       </div>
       <div class="card">
         <h3>Session stats</h3>
-        <p>Tiles with play time, dirt and worms earned, rates per hour, tools, relics, minigames, sand, coffee, chests, hats, prestiges and achievements since you started the game.</p>
+        <p>Its own tab next to Badges in the game (or <kbd>C</kbd>): tiles with play time, dirt and worms earned, rates per hour, tools, relics, minigames, sand, coffee, chests, hats, prestiges and achievements since you started the game.</p>
       </div>
       <div class="card">
         <h3>Update alerts</h3>
@@ -319,24 +323,24 @@
     <h2>In the game</h2>
     <div class="gallery">
       <figure>
+        <img class="shot" src="images/performance.jpg" width="1671" height="941" loading="lazy" alt="The same late-game run at 20 FPS without the Performance options and 80 FPS with them">
+        <figcaption>Performance options: 20 FPS to 80 FPS late in the game</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/settings.jpg" width="1920" height="1080" loading="lazy" alt="The Dirt Autopilot tab in Options: Enable all and Disable all, the Performance card with one switch for all options, and the Automations group starting with the auto-sweeper">
+        <figcaption>Options → Dirt Autopilot: Performance and Automations</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/qol.jpg" width="1920" height="1080" loading="lazy" alt="The Quality of life group: next milestone, prestige alert, legendary protection, popup skipping and the Achievements card">
+        <figcaption>Quality of life: progress, items, popups and achievements</figcaption>
+      </figure>
+      <figure>
+        <img class="shot" src="images/session-stats.jpg" width="1920" height="1080" loading="lazy" alt="The Session stats tab open next to the play field, its C hotkey shown on the tab, and the prestige alert naming the best buy">
+        <figcaption>The Session stats tab (<kbd>C</kbd>) and the prestige alert</figcaption>
+      </figure>
+      <figure>
         <img class="shot" src="images/timer-minigame.jpg" width="1920" height="1082" loading="lazy" alt="The Sand Mines panel showing PERFECT at 00.00 after the mod stopped the timer">
         <figcaption>The Sand Mines timer stopped at 00.00: PERFECT</figcaption>
-      </figure>
-      <figure>
-        <img class="shot" src="images/settings.jpg" width="1920" height="1080" loading="lazy" alt="The Dirt Autopilot tab in the game's Options with the Auto-sweeper and Sand Mines switches">
-        <figcaption>Every setting in Options → Dirt Autopilot</figcaption>
-      </figure>
-      <figure>
-        <img class="shot" src="images/extras.jpg" width="1920" height="1080" loading="lazy" alt="The Extras section: coffee bean, chests, popup skipping and a pal picker for every hat">
-        <figcaption>Extras, with a pal picker for every hat</figcaption>
-      </figure>
-      <figure>
-        <img class="shot" src="images/performance.jpg" width="1920" height="1080" loading="lazy" alt="The Performance, Progress and Achievements sections, with a Do it button next to the Dragoon achievement">
-        <figcaption>Performance, Progress and Achievements</figcaption>
-      </figure>
-      <figure>
-        <img class="shot" src="images/session-stats.jpg" width="1920" height="1080" loading="lazy" alt="Session stats as tiles: play time, dirt earned, dirt per hour, worms, tools, items, relics, sand, coffee, chests, hats and prestiges">
-        <figcaption>Session stats</figcaption>
       </figure>
     </div>
 
@@ -375,14 +379,14 @@
       <tr><td><kbd>F5</kbd></td><td>Auto-sweep on/off</td></tr>
       <tr><td><kbd>F6</kbd></td><td>Sweep guides on/off: a dot on each ready tool, a ring where the sweeper is</td></tr>
       <tr><td><kbd>F7</kbd></td><td>Sand Mines timer on/off</td></tr>
-      <tr><td><kbd>Insert</kbd></td><td>Show what's switched on, plus play time and dirt for this session</td></tr>
+      <tr><td><kbd>C</kbd></td><td>Open or close the Session stats tab</td></tr>
       <tr><td><kbd>F9</kbd></td><td>Open or close the Dirt Autopilot settings</td></tr>
     </table>
-    <p class="note">To change a key, click it in the <b>Hotkeys</b> section of the settings, then press the new one. Esc cancels and Backspace removes it.</p>
-    <img class="shot" src="images/hotkeys.jpg" width="1920" height="1082" loading="lazy" alt="The Hotkeys section of the Dirt Autopilot settings: Auto-sweep F5, Sweep guides F6, Sand Mines timer F7, Show what's on Insert, Open these settings F9">
+    <p class="note">To change a key, click it in the <b>Hotkeys</b> section (under <b>Setup</b>) of the settings, then press the new one. Esc cancels and Backspace removes it.</p>
+    <img class="shot" src="images/hotkeys.jpg" width="1920" height="1080" loading="lazy" alt="The Setup group of the Dirt Autopilot settings: Auto-sweep F5, Sweep guides F6, Sand Mines timer F7, Session stats tab C, Open these settings F9, and Reset all settings">
 
     <h2>What's on from the start</h2>
-    <p>Most features are off until you switch them on. These start on: <b>sweep guides</b>, <b>spending sand</b>, <b>legendary protection</b>, <b>hats on pals</b>, the <b>next-milestone bar</b> and the <b>prestige alert</b>. <b>Enable all</b> and <b>Disable all</b> at the top of the settings switch everything at once.</p>
+    <p>Most features are off until you switch them on. These start on: <b>sweep guides</b>, <b>spending sand</b>, <b>legendary protection</b>, <b>hats on pals</b>, the <b>next-milestone bar</b> and the <b>prestige alert</b>. <b>Enable all</b> and <b>Disable all</b> at the top of the settings switch every feature at once; the Performance options have their own switch.</p>
 
     <h2>Questions</h2>
     <details>
@@ -407,7 +411,7 @@
     </details>
     <details>
       <summary>The game gets slow late in a run.</summary>
-      <p>Switch on <b>Skip flying dirt and worms</b> and <b>Hide dig effects</b> in the Performance section. Turning off the game's own CRT effect in Options and the mod's sweep guides (<kbd>F6</kbd>) helps too.</p>
+      <p>Open the <b>Performance</b> card at the top of the settings and switch on <b>All performance options</b>, or pick them one by one: <b>Skip flying dirt and worms</b> helps the most, and hiding buff icons is next. Turning off the game's own CRT effect in Options and the mod's sweep guides (<kbd>F6</kbd>) helps too.</p>
     </details>
     <details>
       <summary>Where are my settings? How do I uninstall?</summary>
