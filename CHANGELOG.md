@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3
+- **More Performance options**, all off by default: hide buff icons on tools and pals, stomp circles, pal names, sell amounts in the inventory and the "+N" on new items. Hidden buff icons also stop updating, which saves the most.
+- **Next-milestone bar** moved to the top-left, right under your dirt per second.
+
 ## 1.1.2
 - **Performance** section, both off by default:
   - **Skip flying dirt and worms:** dirt and worms land on your counter at once instead of flying there. The biggest FPS saver late in the game.

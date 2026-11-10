@@ -1,7 +1,8 @@
 extends Control
-## Next milestone in the bottom-left of the play field: a progress bar with the
-## upcoming item's icon on its right ("?" when it's a random relic). Hovering
-## shows the details in a card above it.
+## Next milestone: a progress bar with the upcoming item's icon on its right
+## ("?" when it's a random relic). Normally sits in the game's top-left Data
+## column right under dirt per second (`in_column`), with the details card below
+## it on hover; otherwise in the bottom-left of the play field, card above.
 
 const SessionStats := preload("../core/session_stats.gd")
 
@@ -17,6 +18,8 @@ const FILL_COLOR := Color(0.85, 0.56, 0.21)
 const LOOKUP_SEC := 0.1
 
 var progress
+## Set before adding: true when placed inside the game's Data VBoxContainer.
+var in_column := false
 
 var _card: PanelContainer
 var _icon: TextureRect
@@ -32,12 +35,17 @@ var _lookup_t := 0.0
 
 func _ready() -> void:
 	# Fixed size, so nothing inside can change the layout.
-	anchor_top = 1.0
-	anchor_bottom = 1.0
-	offset_left = MARGIN
-	offset_right = MARGIN + WIDTH
-	offset_bottom = -MARGIN
-	offset_top = -MARGIN - (ICON_PX + PAD * 2)
+	var h := ICON_PX + PAD * 2
+	if in_column:
+		custom_minimum_size = Vector2(WIDTH, h)
+		size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	else:
+		anchor_top = 1.0
+		anchor_bottom = 1.0
+		offset_left = MARGIN
+		offset_right = MARGIN + WIDTH
+		offset_bottom = -MARGIN
+		offset_top = -MARGIN - h
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	_card = _panel(0.8)
@@ -92,12 +100,22 @@ func _ready() -> void:
 	_unknown.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slot.add_child(_unknown)
 
-	# Sits above the bar and grows upward, so the bar itself never moves.
+	# Grows away from the bar (down in the column, up in the corner), so the
+	# bar itself never moves.
 	_tip = _panel(0.92)
 	_tip.anchor_right = 1.0
-	_tip.offset_top = -TIP_GAP
-	_tip.offset_bottom = -TIP_GAP
-	_tip.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	if in_column:
+		_tip.anchor_top = 1.0
+		_tip.anchor_bottom = 1.0
+		_tip.offset_top = TIP_GAP
+		_tip.offset_bottom = TIP_GAP
+		_tip.grow_vertical = Control.GROW_DIRECTION_END
+		# Over the rows below it (play time).
+		_tip.z_index = 1
+	else:
+		_tip.offset_top = -TIP_GAP
+		_tip.offset_bottom = -TIP_GAP
+		_tip.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_tip.visible = false
 	add_child(_tip)
