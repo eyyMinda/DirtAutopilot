@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+- **Next milestone:** a bar in the bottom-left of the play field shows the next chest or relic and how close you are. Known milestones show their icon, random relics show a **?**. Hover for the name and exact numbers.
+- On by default: legendary protection, putting hats on pals, the milestone bar and the prestige alert. Settings you already saved are kept.
+
 ## 1.0.3
 - **Prestige alert:** lets you know when prestiging would give enough worms for more prestige upgrades. Click it to view the prestige tree. Choose how many new upgrades it takes before you're alerted.
 
