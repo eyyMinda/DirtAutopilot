@@ -9,13 +9,21 @@ const Settings := preload("core/settings.gd")
 const SessionStats := preload("core/session_stats.gd")
 const Sweeper := preload("features/sweeper.gd")
 const Automations := preload("features/automations.gd")
+const Progress := preload("features/progress.gd")
+const Achievements := preload("features/achievements.gd")
+const FpsSaver := preload("features/fps_saver.gd")
+const UpdateCheck := preload("core/update_check.gd")
 const SettingsView := preload("ui/settings_view.gd")
+const Icons := preload("ui/icons.gd")
 const Guides := preload("ui/guides.gd")
 const Toast := preload("ui/toast.gd")
+const Alert := preload("ui/alert.gd")
+const MilestoneBar := preload("ui/milestone_bar.gd")
 
 const LOG_NAME := "eyyMinda-DirtAutopilot"
 const TAB_TITLE := "Dirt Autopilot"
 const SAVE_DELAY_SEC := 0.5
+const FIELD_PATH := "Base/Game/Panels/Left"
 ## Used for logging when the loader provides it; print() otherwise.
 const ML_LOG_PATH := "res://addons/mod_loader/api/log.gd"
 
@@ -25,6 +33,12 @@ var sweeper: Sweeper
 var auto: Automations
 var guides: Guides
 var toast: Toast
+var alert: Alert
+var progress: Progress
+var achievements: Achievements
+var fps_saver: FpsSaver
+var updates: UpdateCheck
+var milestone_bar: MilestoneBar
 ## Set by the settings screen while it waits for a new hotkey.
 var rebinding := false
 var version := ""
@@ -49,13 +63,25 @@ func _ready() -> void:
 	sweeper = _add(Sweeper.new(), "Sweeper")
 	auto = _add(Automations.new(), "Automations")
 	auto.setup(settings)
+	progress = _add(Progress.new(), "Progress")
+	progress.setup(settings)
+	achievements = _add(Achievements.new(), "Achievements")
+	achievements.setup(settings)
+	fps_saver = _add(FpsSaver.new(), "FpsSaver")
+	fps_saver.setup(settings)
+	updates = _add(UpdateCheck.new(), "UpdateCheck")
 	toast = _add(Toast.new(), "Toast")
-	auto.relic_opened.connect(func(): stats.relics_opened += 1)
-	auto.chest_opened.connect(func(): stats.chests += 1)
+	alert = _add(Alert.new(), "Alert")
+	_set_alert_field()
+	auto.relic_opened.connect(stats.add.bind("relics_opened"))
+	auto.chest_opened.connect(stats.add.bind("chests"))
+	progress.prestige_ready.connect(_on_prestige_ready)
+	updates.update_found.connect(_on_update_found)
 
 	settings.changed.connect(_on_setting_changed)
-	for key in ["sweep_enabled", "sweep_extra_hold_ms", "sweep_guides"]:
+	for key in ["sweep_enabled", "sweep_guides", "milestone_bar"]:
 		_on_setting_changed(key)
+	updates.check(version)
 	_save_t = 0.0
 
 	_add_options_tab()
@@ -98,10 +124,10 @@ func _on_setting_changed(key: String) -> void:
 	match key:
 		"sweep_enabled":
 			sweeper.set_enabled(v)
-		"sweep_extra_hold_ms":
-			sweeper.min_hold_sec = v / 1000.0
 		"sweep_guides":
 			_set_guides(v)
+		"milestone_bar":
+			_set_milestone_bar(v)
 
 
 func _set_guides(on: bool) -> void:
@@ -113,6 +139,53 @@ func _set_guides(on: bool) -> void:
 		guides.name = "DirtAutopilotGuides"
 		guides.sweeper = sweeper
 		add_child(guides)
+
+
+func _set_milestone_bar(on: bool) -> void:
+	if is_instance_valid(milestone_bar):
+		milestone_bar.queue_free()
+	milestone_bar = null
+	if !on:
+		return
+	var bar := MilestoneBar.new()
+	bar.name = "DirtAutopilotMilestone"
+	bar.progress = progress
+	milestone_bar = bar
+	while !(is_instance_valid(GM) and GM.ui):
+		await get_tree().process_frame
+	if milestone_bar != bar:
+		return
+	# The screen corner if the game's layout changes.
+	var parent: Node = _field()
+	if parent == null:
+		parent = CanvasLayer.new()
+		add_child(parent)
+	parent.add_child(bar)
+
+
+## The play field: the game area left of the shop panel.
+func _field() -> Control:
+	return GM.ui.get_node_or_null(FIELD_PATH) as Control
+
+
+func _set_alert_field() -> void:
+	while !(is_instance_valid(GM) and GM.ui):
+		await get_tree().process_frame
+	alert.field = _field()
+
+
+func _on_prestige_ready(new_upgrades: int, worms_gain: int, icon: Texture2D, best_name: String) -> void:
+	var title := "Prestige: %d new upgrade%s" % [new_upgrades, "" if new_upgrades == 1 else "s"]
+	var desc := "+%s worms." % SessionStats._num(worms_gain)
+	if !best_name.is_empty():
+		desc += " Best buy: %s." % best_name
+	alert.push(icon if icon else Progress.worms_icon(), title, desc, GM.prestige._input_prestige_tree_view, 10.0)
+
+
+func _on_update_found(new_version: String, url: String) -> void:
+	log_info("v%s is available: %s" % [new_version, url])
+	alert.push(Icons.texture(Icons.GITHUB, Color.WHITE, 32), "Dirt Autopilot v%s is out" % new_version,
+		"You have v%s. Click to open the download page." % version, OS.shell_open.bind(url), 12.0)
 
 
 func active_feature_labels() -> Array:

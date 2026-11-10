@@ -2,17 +2,26 @@
 
 An in-game automation helper for **Dirt Clicker**. Website: [eyyminda.github.io/DirtAutopilot](https://eyyminda.github.io/DirtAutopilot/) · Download: [Nexus Mods](https://www.nexusmods.com/dirtclicker/mods/1) or [GitHub releases](https://github.com/eyyMinda/DirtAutopilot/releases/latest). It's the in-game successor to the [Dirt Sweeper](https://github.com/eyyMinda/Dirt-Sweeper) overlay. Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
 
-Everything is **off until you switch it on**, in **Options → Dirt Autopilot**.
+![Auto-sweep at work: the hover circle on ready tools, with the sweep guides on](docs/images/autosweep.jpg)
+
+Most features are **off until you switch them on**, in **Options → Dirt Autopilot**. On from the start: sweep guides, spending sand, legendary protection, putting hats on pals, the next-milestone bar and the prestige alert.
 
 ## What it can do
 
 | Section | Feature |
 | --- | --- |
 | Auto-sweeper | Moves the hover circle onto tools that are ready, as many per stop as possible. Your real mouse is never moved, and when nothing is ready the circle follows your mouse as usual. |
-| Minigames | Plays the Sand Mines timer for a PERFECT every round (and can start it when it's ready). Solves the relic minigames: words, math cards, dice and the rest. |
-| Relics & items | Opens your relics one at a time. Protects legendary items from fox pals and Sell All. |
-| Extras | Grabs the coffee bean, opens chests you have the key for, and skips relic and/or achievement popups. |
-| Session stats | Play time, dirt per hour, items, relics, minigames, coffee beans and chests since you started the game. |
+| Sand Mines | Plays the Sand Mines timer for a PERFECT every round, starting it whenever it's ready. Spends your sand on all upgrades at once. |
+| Relics & items | Solves the relic minigames: words, math cards, dice and the rest. Opens your relics one at a time. Protects legendary items from fox pals and Sell All. |
+| Extras | Grabs the coffee bean, opens chests you have the key for, skips relic and/or achievement popups, and puts each new hat on a pal it actually helps. You can choose the pal for each hat. Each pal gets a name from the game's credits, starting with Todd for the achievement. |
+| Performance | Optional FPS savers for the late game: dirt and worms land on the counter at once instead of flying there, and dig effects (dust puffs, zap lines, item pops) can be hidden. |
+| Progress | A bar in the bottom-left showing the next milestone: its icon (or **?** when it's a random relic) and how close you are. Hover it for details. A prestige alert tells you when prestiging would let you buy more prestige upgrades, and the prestige advisor names the best one to buy and marks it in the prestige tree. |
+| Achievements | A checklist of the game's achievements with your progress, which of the mod's features earns each one, and a **Do it** button for the cookie-clicking and volume ones. |
+| Session stats | Tiles with play time, dirt and worms earned, dirt and items per hour, tools triggered, relics, minigames, sand, coffee, chests, hats, prestiges and achievements since you started the game. |
+
+![The Dirt Autopilot settings tab in the game's Options](docs/images/settings.jpg)
+
+![The Sand Mines timer stopped at 00.00 for a PERFECT](docs/images/timer-minigame.jpg)
 
 ## Install
 
@@ -37,11 +46,15 @@ Dirt Autopilot needs a mod loader. It works with both [DirtLoader](https://www.n
 
 To change a key, click it in the **Hotkeys** section, then press the new one. Esc cancels and Backspace removes it.
 
+![The Hotkeys section of the settings](docs/images/hotkeys.jpg)
+
 ## Good to know
 
 - **Protect legendary items** locks them, so you can't sell them by hand either while it's on. Switch it off to sell them.
 - **Open relics** only opens relics that start a minigame while **Solve relic minigames** is on, so a minigame never pops up by surprise.
 - While auto-sweep holds the circle on some tools, clicking a chest or other clickable thing in the field uses the circle's position, not your mouse. Press F5 to pause it.
+- The mod checks GitHub for a new version when the game starts and shows an alert if there is one.
+- **Put hats on pals** never puts a hat on a pal it does nothing for. If none of the right pals is free, the hat stays in the hat picker until you place it or buy a suitable pal.
 - DirtLoader turns Steam achievements off while mods are loaded, unless you enable them in **Options → Mods**. That's DirtLoader's setting, not this mod's.
 
 Settings are saved to `%APPDATA%\Godot\app_userdata\Dirt Clicker\DirtAutopilot\settings.json`. **Reset all settings** at the bottom of the page restores the defaults.
@@ -49,13 +62,6 @@ Settings are saved to `%APPDATA%\Godot\app_userdata\Dirt Clicker\DirtAutopilot\s
 ## Uninstall
 
 Delete the mod's folder or zip from `<game folder>\mods\`. To remove its settings too, delete `%APPDATA%\Godot\app_userdata\Dirt Clicker\DirtAutopilot\`.
-
-## Releasing (maintainers)
-
-Releases are built by GitHub Actions ([.github/workflows/release.yml](.github/workflows/release.yml)) and attached as `eyyMinda-DirtAutopilot-<version>.zip`, containing the `eyyMinda-DirtAutopilot/` folder (the scripts, `manifest.json`, `README.md` and `LICENSE`).
-
-- **From GitHub:** Actions → Release → Run workflow, enter the new version (e.g. `1.0.1`). It updates `version_number` in `manifest.json`, commits, tags `v1.0.1` and publishes the release.
-- **From git:** set `version_number` in `manifest.json`, commit, then `git tag v1.0.1 && git push origin v1.0.1`. The workflow fails if the tag and manifest version differ.
 
 ## License
 

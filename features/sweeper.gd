@@ -10,7 +10,6 @@ const STUCK_EXTRA_SEC := 0.25
 const SKIP_SEC := 1.5
 
 var enabled := false
-var min_hold_sec := 0.0
 
 var cursor: CursorNodeWorld
 var world: World
@@ -18,17 +17,14 @@ var world: World
 var holding := false
 var target := Vector2.ZERO
 var covered: Array[ToolNodeWorld] = []
-var _hold_start_msec := 0
 var _hold_start_physics := 0
 var _deadline_msec := 0
 
 var _physics_frames := 0
 var _skip_until: Dictionary = {}
 var _shape_cache: Dictionary = {}
-
-var stops := 0
-var triggers := 0
-var ready_count := 0
+## The latest ready_tools() result, for the guides to draw without scanning again.
+var last_ready: Array = []
 
 
 func _ready() -> void:
@@ -48,6 +44,7 @@ func set_enabled(on: bool) -> void:
 func _release() -> void:
 	holding = false
 	covered.clear()
+	last_ready = []
 
 
 func _process(_delta: float) -> void:
@@ -97,15 +94,12 @@ func _hold_done(now: int) -> bool:
 	# Area overlaps are only detected on a physics step after the move.
 	if _physics_frames - _hold_start_physics < 1:
 		return false
-	if now - _hold_start_msec < int(min_hold_sec * 1000.0):
-		return false
 	var pending := false
 	for t in covered:
 		if is_instance_valid(t) and !t.is_triggered:
 			pending = true
 			break
 	if !pending:
-		triggers += covered.size()
 		return true
 	if now >= _deadline_msec:
 		for t in covered:
@@ -118,7 +112,6 @@ func _hold_done(now: int) -> bool:
 func _start_next(now: int) -> void:
 	var rc := cursor_radius()
 	var items := ready_tools(now, rc)
-	ready_count = items.size()
 	if items.is_empty():
 		return
 	var pick := _pick_spot(items, rc)
@@ -128,11 +121,9 @@ func _start_next(now: int) -> void:
 	var max_dur := 0.0
 	for t in covered:
 		max_dur = maxf(max_dur, t._hover_sec_needed)
-	_hold_start_msec = now
 	_hold_start_physics = _physics_frames
 	_deadline_msec = now + int((max_dur + STUCK_EXTRA_SEC) * 1000.0)
 	holding = true
-	stops += 1
 
 
 ## Landed, untriggered tools the cursor can trigger, as [{tool, pos, reach}].
@@ -156,6 +147,7 @@ func ready_tools(now: int, rc: float) -> Array:
 			"pos": cs.global_position,
 			"reach": rc + _shape_radius(cs) - MARGIN,
 		})
+	last_ready = out
 	return out
 
 
@@ -244,6 +236,7 @@ func _covered_at(items: Array, idxs: Array, c: Vector2) -> Array:
 	var out: Array = []
 	for j in idxs:
 		var it: Dictionary = items[j]
-		if c.distance_to(it.pos) <= it.reach:
+		var r: float = it.reach
+		if r >= 0.0 and c.distance_squared_to(it.pos) <= r * r:
 			out.append(j)
 	return out

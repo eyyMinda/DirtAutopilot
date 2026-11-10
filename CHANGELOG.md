@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2
+- **Performance** section, both off by default:
+  - **Skip flying dirt and worms:** dirt and worms land on your counter at once instead of flying there. The biggest FPS saver late in the game.
+  - **Hide dig effects:** no dust puffs, zap lines or item pops when tools trigger.
+- The mod itself does less work per frame: automations that don't need frame timing run 10 times a second, the milestone bar looks up the timeline 10 times a second, and the sweep guides reuse the auto-sweeper's scan.
+- The prestige advisor is always on; its setting is gone.
+
 ## 1.1.1
 - **Prestige advisor:** marks the best upgrade to buy in the prestige tree with **BEST**, and the prestige alert names it. Its picks favour what the mod's automations make the most of: new worlds and dirt boosts first, cursor radius while auto-sweep is on, sand upgrades, and never minigame auto-solve while the mod solves them.
 

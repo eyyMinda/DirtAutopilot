@@ -1,8 +1,8 @@
 {
 	"name": "DirtAutopilot",
 	"namespace": "eyyMinda",
-	"version_number": "1.1.1",
-	"description": "Automation helper: auto-sweeps ready tools, plays the Sand Mines timer and relic minigames, opens relics and chests, grabs the coffee bean, and protects legendary items. Settings in Options > Dirt Autopilot.",
+	"version_number": "1.1.2",
+	"description": "Automation helper: auto-sweeps ready tools, plays the Sand Mines timer and relic minigames, spends sand on upgrades, opens relics and chests, grabs the coffee bean, puts hats on the pals they help, protects legendary items, shows the next milestone and alerts you when prestige is worth it. Settings in Options > Dirt Autopilot.",
 	"website_url": "https://github.com/eyyMinda/DirtAutopilot",
 	"dependencies": [],
 	"extra": {
