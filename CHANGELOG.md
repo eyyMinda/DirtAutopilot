@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.8
+- **Prestige alert** shows the icon of the first upgrade prestiging unlocks, instead of always the worm. Fixed its text being squeezed into a narrow column.
+- **Simpler settings:** removed **Extra wait per spot**, **Answer after**, **Start it when it's ready** (the timer game now always starts itself), the sand **Order** (sand always fills every upgrade) and **Alert at** (the prestige alert fires from the first new upgrade).
+- On by default: **Show sweep guides** and **Spend sand on upgrades**.
+
 ## 1.0.7
 - **Pal names:** pals that get a hat are named after people from the game's credits, and no two pals share a name. The first one is always **Todd**, which unlocks the "name a pal Todd" achievement.
 

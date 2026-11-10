@@ -10,7 +10,8 @@ const VERSION := 3
 
 ## Settings in display order; the settings screen and hotkeys are built from this.
 ## Entries: {section}, {view} (custom block in settings_view.gd), or a setting:
-##   bool default = switch, int default = slider (min/max/step/unit), hotkey: true = key.
+##   bool default = switch, hotkey: true (int keycode) = key,
+##   String default = dropdown of pals for hat (a key from features/hats.gd).
 ## Optional: desc, requires (parent switch), hotkey_of (key that flips this switch),
 ##   all: false (left out of "Enable all").
 const SCHEMA: Array[Dictionary] = [
@@ -21,30 +22,25 @@ const SCHEMA: Array[Dictionary] = [
 	{"key": "sweep_enabled", "default": false, "hotkey_of": "key_sweep",
 		"label": "Auto-sweep",
 		"desc": "Moves the hover circle onto tools that are ready, so they trigger without you moving the mouse."},
-	{"key": "sweep_guides", "default": false, "hotkey_of": "key_guides", "all": false,
+	{"key": "sweep_guides", "default": true, "hotkey_of": "key_guides", "all": false,
 		"label": "Show sweep guides"},
-	{"key": "sweep_extra_hold_ms", "default": 0, "min": 0, "max": 500, "step": 5, "unit": "ms",
-		"requires": "sweep_enabled",
-		"label": "Extra wait per spot",
-		"desc": "Leave at 0 unless tools get skipped."},
 
-	{"section": "Minigames"},
+	{"section": "Sand Mines"},
 	{"key": "timer_game", "default": false, "hotkey_of": "key_timer",
-		"label": "Play the Sand Mines timer"},
-	{"key": "timer_game_auto_start", "default": true, "requires": "timer_game",
-		"label": "Start it when it's ready"},
+		"label": "Play the Sand Mines timer",
+		"desc": "Starts it whenever it's ready and stops on PERFECT."},
+	{"key": "sand_auto", "default": true,
+		"label": "Spend sand on upgrades",
+		"desc": "Fills every sand upgrade, so you don't have to click them."},
+
+	{"section": "Relics & items"},
 	{"key": "relic_mg_solve", "default": false,
 		"label": "Solve relic minigames",
 		"desc": "Words, math cards, dice and the rest."},
-	{"key": "relic_mg_delay_ms", "default": 500, "min": 0, "max": 5000, "step": 100, "unit": "ms",
-		"requires": "relic_mg_solve",
-		"label": "Answer after"},
-
-	{"section": "Relics & items"},
 	{"key": "relics_open", "default": false,
 		"label": "Open relics",
 		"desc": "Relics with a minigame are only opened while \"Solve relic minigames\" is on."},
-	{"key": "protect_legendary", "default": false,
+	{"key": "protect_legendary", "default": true,
 		"label": "Protect legendary items",
 		"desc": "Fox pals and Sell All leave them alone. You can't sell them by hand while this is on."},
 
@@ -57,6 +53,35 @@ const SCHEMA: Array[Dictionary] = [
 		"label": "Skip relic popups"},
 	{"key": "skip_popup_achievements", "default": false,
 		"label": "Skip achievement popups"},
+	{"key": "hats_place", "default": true,
+		"label": "Put hats on pals",
+		"desc": "Each new hat goes on a pal it helps, picked below, and the pal is named after someone from the credits. If none of those pals is free, the hat waits for you."},
+	{"key": "hat_HAT_DIRT_MULTIPLY", "default": "", "hat": "HAT_DIRT_MULTIPLY", "requires": "hats_place"},
+	{"key": "hat_HAT_RADIUS", "default": "", "hat": "HAT_RADIUS", "requires": "hats_place"},
+	{"key": "hat_HAT_LUCK", "default": "", "hat": "HAT_LUCK", "requires": "hats_place"},
+	{"key": "hat_HAT_WORMS", "default": "", "hat": "HAT_WORMS", "requires": "hats_place"},
+	{"key": "hat_HAT_ACTIONS", "default": "", "hat": "HAT_ACTIONS", "requires": "hats_place"},
+	{"key": "hat_HAT_IDLE_REDUCE", "default": "", "hat": "HAT_IDLE_REDUCE", "requires": "hats_place"},
+	{"key": "hat_HAT_BUFF_TIME", "default": "", "hat": "HAT_BUFF_TIME", "requires": "hats_place"},
+
+	{"section": "Performance"},
+	{"key": "perf_no_particles", "default": false, "all": false,
+		"label": "Skip flying dirt and worms",
+		"desc": "Dirt and worms land on your counter at once instead of flying there. The biggest FPS saver late in the game."},
+	{"key": "perf_no_effects", "default": false, "all": false,
+		"label": "Hide dig effects",
+		"desc": "No dust puffs, zap lines or item pops when tools trigger."},
+
+	{"section": "Progress"},
+	{"key": "milestone_bar", "default": true,
+		"label": "Show the next milestone",
+		"desc": "A bar in the bottom-left with the next chest or relic. Hover it for details."},
+	{"key": "prestige_alert", "default": true,
+		"label": "Prestige alert",
+		"desc": "Lets you know when prestiging would let you buy more prestige upgrades."},
+
+	{"section": "Achievements"},
+	{"view": "achievements"},
 
 	{"section": "Session stats"},
 	{"view": "stats"},
@@ -79,11 +104,8 @@ const SCHEMA: Array[Dictionary] = [
 
 const MIGRATIONS := {
 	"guides": "sweep_guides",
-	"min_hold_ms": "sweep_extra_hold_ms",
 	"timer_enabled": "timer_game",
-	"timer_auto_start": "timer_game_auto_start",
 	"mg_solve": "relic_mg_solve",
-	"mg_solve_delay_ms": "relic_mg_delay_ms",
 	"relics_auto": "relics_open",
 	"coffee_auto": "coffee_click",
 	"chests_auto": "chests_open",
@@ -175,6 +197,8 @@ func load_file() -> String:
 		var e: Dictionary = _entries[key]
 		var v = data[key]
 		if e.default is bool and v is bool:
+			values[key] = v
+		elif e.default is String and v is String:
 			values[key] = v
 		elif e.default is int and (v is float or v is int):
 			values[key] = clampi(int(v), e.get("min", int(v)), e.get("max", int(v)))
