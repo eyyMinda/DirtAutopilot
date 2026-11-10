@@ -123,29 +123,26 @@ func hero() -> Array:
 	]
 
 
+## Grouped rows; "group" starts a new block in the stats tab.
 func tiles() -> Array:
 	return [
-		{"label": "Worms earned", "value": _num(worms), "icon": ICON_WORMS},
+		{"group": "Digging", "label": "Worms earned", "value": _num(worms), "icon": ICON_WORMS},
 		{"label": "Tools triggered", "value": _num(n.tools_triggered), "icon": ICON_CURSOR},
-		{"label": "Items found", "value": _num(n.items), "icon": ICON_ITEM},
-		{"label": "Items per hour", "value": _per_hour(n.items), "icon": ICON_ITEM},
-		{"label": "Items sold", "value": _num(n.items_sold), "icon": ICON_ITEM},
-		{"label": "Relics found", "value": _num(n.relics), "icon": ICON_RELIC},
-		{"label": "Relics opened", "value": _num(n.relics_opened), "icon": ICON_RELIC},
+		{"group": "Items", "label": "Found", "value": _num(n.items), "icon": ICON_ITEM},
+		{"label": "Per hour", "value": _per_hour(n.items), "icon": ICON_ITEM},
+		{"label": "Sold", "value": _num(n.items_sold), "icon": ICON_ITEM},
+		{"group": "Relics", "label": "Found", "value": _num(n.relics), "icon": ICON_RELIC},
+		{"label": "Opened", "value": _num(n.relics_opened), "icon": ICON_RELIC},
 		{"label": "Minigames won", "value": "%d / %d" % [n.minigames_won, n.minigames_won + n.minigames_lost], "icon": ICON_MINIGAME},
-		{"label": "Sand Mines games", "value": _num(n.sand_runs), "icon": ICON_SAND},
+		{"group": "Sand Mines", "label": "Games", "value": _num(n.sand_runs), "icon": ICON_SAND},
 		{"label": "PERFECT stops", "value": _num(n.perfects), "icon": ICON_TROPHY},
-		{"label": "Sand upgrades", "value": _num(n.sand_levels), "icon": ICON_SAND},
-		{"label": "Coffee beans", "value": _num(n.coffees), "icon": ICON_COFFEE},
+		{"label": "Upgrades", "value": _num(n.sand_levels), "icon": ICON_SAND},
+		{"group": "Other", "label": "Coffee beans", "value": _num(n.coffees), "icon": ICON_COFFEE},
 		{"label": "Chests opened", "value": _num(n.chests), "icon": ICON_CHEST},
 		{"label": "Hats placed", "value": _num(n.hats), "icon": ICON_HAT},
 		{"label": "Prestiges", "value": _num(n.prestiges), "icon": ICON_WORMS},
 		{"label": "Achievements", "value": _num(n.achievements), "icon": ICON_ACHIEVEMENT},
 	]
-
-
-func summary() -> String:
-	return "This session: %s played · %s dirt" % [_time(play_sec), _num(dirt)]
 
 
 static func _time(sec: float) -> String:

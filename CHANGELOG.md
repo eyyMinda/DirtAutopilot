@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.4
+- **Session stats tab:** session stats moved out of the settings into their own tab, after Badges in the game's tab column, laid out to fit the side panel. Open or close it with **C** (hover the tab to see the key).
+- Removed the Insert status message and the "Show hotkey messages" setting. Hotkey messages always show.
+
 ## 1.1.3
 - **More Performance options**, all off by default: hide buff icons on tools and pals, stomp circles, pal names, sell amounts in the inventory and the "+N" on new items. Hidden buff icons also stop updating, which saves the most.
 - **Next-milestone bar** moved to the top-left, right under your dirt per second.
