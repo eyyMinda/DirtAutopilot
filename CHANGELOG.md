@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.0
+- **Session stats** are now tiles with the game's icons: three headline numbers (play time, dirt earned, dirt per hour) and a grid that fits the window. New: worms earned, items per hour, sand upgrades, hats placed, prestiges and achievements.
+
 ## 1.0.9
 - **Achievements:** a checklist of the game's achievements in the settings, with progress for the counted ones and which feature earns each. **Do it** handles two chores: clicking the cookie relic 999 times (Dragoon) and the volume one (Connor LP; your volumes aren't changed).
 
