@@ -1,6 +1,6 @@
 # Dirt Autopilot
 
-An in-game automation helper for **Dirt Clicker**. Website: [eyyminda.github.io/DirtAutopilot](https://eyyminda.github.io/DirtAutopilot/) · Download: [Nexus Mods](https://www.nexusmods.com/dirtclicker/mods/1) or [GitHub releases](https://github.com/eyyMinda/DirtAutopilot/releases/latest). It's the in-game successor to the [Dirt Sweeper](https://github.com/eyyMinda/Dirt-Sweeper) overlay. Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
+An in-game automation helper for **Dirt Clicker**. Website: [eyyminda.github.io/DirtAutopilot](https://eyyminda.github.io/DirtAutopilot/) · Download: [Nexus Mods](https://www.nexusmods.com/dirtclicker/mods/1) or [GitHub releases](https://github.com/eyyMinda/DirtAutopilot/releases/latest). Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
 
 ![Dirt Autopilot in a run: the prestige alert naming the best buy, pals named after the game's credits, and the next-milestone bar in the bottom-left](docs/images/main.jpg)
 
