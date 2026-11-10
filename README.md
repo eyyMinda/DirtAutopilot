@@ -2,7 +2,7 @@
 
 An in-game automation helper for **Dirt Clicker**. Website: [eyyminda.github.io/DirtAutopilot](https://eyyminda.github.io/DirtAutopilot/) · Download: [Nexus Mods](https://www.nexusmods.com/dirtclicker/mods/1) or [GitHub releases](https://github.com/eyyMinda/DirtAutopilot/releases/latest). It's the in-game successor to the [Dirt Sweeper](https://github.com/eyyMinda/Dirt-Sweeper) overlay. Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
 
-![Auto-sweep at work: the hover circle on ready tools, with the sweep guides on](docs/images/autosweep.jpg)
+![Dirt Autopilot in a run: the prestige alert naming the best buy, pals named after the game's credits, and the next-milestone bar in the bottom-left](docs/images/main.jpg)
 
 Most features are **off until you switch them on**, in **Options → Dirt Autopilot**. On from the start: sweep guides, spending sand, legendary protection, putting hats on pals, the next-milestone bar and the prestige alert.
 
@@ -19,9 +19,16 @@ Most features are **off until you switch them on**, in **Options → Dirt Autopi
 | Achievements | A checklist of the game's achievements with your progress, which of the mod's features earns each one, and a **Do it** button for the cookie-clicking and volume ones. |
 | Session stats | Tiles with play time, dirt and worms earned, dirt and items per hour, tools triggered, relics, minigames, sand, coffee, chests, hats, prestiges and achievements since you started the game. |
 
-![The Dirt Autopilot settings tab in the game's Options](docs/images/settings.jpg)
+## Screenshots
 
-![The Sand Mines timer stopped at 00.00 for a PERFECT](docs/images/timer-minigame.jpg)
+| | |
+| --- | --- |
+| ![Auto-sweep holding the hover circle on ready tools](docs/images/autosweep.jpg) | ![The Sand Mines timer stopped at 00.00 for a PERFECT](docs/images/timer-minigame.jpg) |
+| **Auto-sweep** on a group of ready tools | **Sand Mines:** stopped at 00.00, PERFECT |
+| ![The Dirt Autopilot tab in Options: auto-sweeper and Sand Mines switches](docs/images/settings.jpg) | ![The Extras section: coffee bean, chests, popups and a pal picker for every hat](docs/images/extras.jpg) |
+| **Options → Dirt Autopilot** | **Extras:** a pal picker for every hat |
+| ![The Performance, Progress and Achievements sections](docs/images/performance.jpg) | ![Session stats as tiles: play time, dirt earned, dirt per hour and more](docs/images/session-stats.jpg) |
+| **Performance, Progress and Achievements** | **Session stats** |
 
 ## Install
 
