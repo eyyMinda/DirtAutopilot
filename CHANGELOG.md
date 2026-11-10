@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.1.1
+- **Prestige advisor:** marks the best upgrade to buy in the prestige tree with **BEST**, and the prestige alert names it. Its picks favour what the mod's automations make the most of: new worlds and dirt boosts first, cursor radius while auto-sweep is on, sand upgrades, and never minigame auto-solve while the mod solves them.
+
 ## 1.1.0
 - **Session stats** are now tiles with the game's icons: three headline numbers (play time, dirt earned, dirt per hour) and a grid that fits the window. New: worms earned, items per hour, sand upgrades, hats placed, prestiges and achievements.
 
