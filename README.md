@@ -23,12 +23,12 @@ Most features are **off until you switch them on**, in **Options → Dirt Autopi
 
 | | |
 | --- | --- |
-| ![Auto-sweep holding the hover circle on ready tools](docs/images/autosweep.jpg) | ![The Sand Mines timer stopped at 00.00 for a PERFECT](docs/images/timer-minigame.jpg) |
-| **Auto-sweep** on a group of ready tools | **Sand Mines:** stopped at 00.00, PERFECT |
-| ![The Dirt Autopilot tab in Options: auto-sweeper and Sand Mines switches](docs/images/settings.jpg) | ![The Extras section: coffee bean, chests, popups and a pal picker for every hat](docs/images/extras.jpg) |
-| **Options → Dirt Autopilot** | **Extras:** a pal picker for every hat |
-| ![The Performance, Progress and Achievements sections](docs/images/performance.jpg) | ![Session stats as tiles: play time, dirt earned, dirt per hour and more](docs/images/session-stats.jpg) |
-| **Performance, Progress and Achievements** | **Session stats** |
+| ![The Sand Mines timer stopped at 00.00 for a PERFECT](docs/images/timer-minigame.jpg) | ![The Dirt Autopilot tab in Options: auto-sweeper and Sand Mines switches](docs/images/settings.jpg) |
+| **Sand Mines:** stopped at 00.00, PERFECT | **Options → Dirt Autopilot** |
+| ![The Extras section: coffee bean, chests, popups and a pal picker for every hat](docs/images/extras.jpg) | ![The Performance, Progress and Achievements sections](docs/images/performance.jpg) |
+| **Extras:** a pal picker for every hat | **Performance, Progress and Achievements** |
+| ![Session stats as tiles: play time, dirt earned, dirt per hour and more](docs/images/session-stats.jpg) | |
+| **Session stats** | |
 
 ## Install
 
