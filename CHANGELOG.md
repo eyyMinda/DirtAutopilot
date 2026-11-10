@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.9
+- **Achievements:** a checklist of the game's achievements in the settings, with progress for the counted ones and which feature earns each. **Do it** handles two chores: clicking the cookie relic 999 times (Dragoon) and the volume one (Connor LP; your volumes aren't changed).
+
 ## 1.0.8
 - **Prestige alert** shows the icon of the first upgrade prestiging unlocks, instead of always the worm. Fixed its text being squeezed into a narrow column.
 - **Simpler settings:** removed **Extra wait per spot**, **Answer after**, **Start it when it's ready** (the timer game now always starts itself), the sand **Order** (sand always fills every upgrade) and **Alert at** (the prestige alert fires from the first new upgrade).
