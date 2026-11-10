@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.5
+- **Hat preferences:** each hat goes on a pal it actually helps. For example, hard hats skip pals that don't dig, such as the Druid and the Dirt golem, and antenna hats go to stomping pals like the Frog. Every hat has a dropdown to pick which pal gets it first, or leave it on **Best fit**. If no suitable pal is free, the hat waits for you.
+
 ## 1.0.4
 - **Next milestone:** a bar in the bottom-left of the play field shows the next chest or relic and how close you are. Known milestones show their icon, random relics show a **?**. Hover for the name and exact numbers.
 - On by default: legendary protection, putting hats on pals, the milestone bar and the prestige alert. Settings you already saved are kept.
