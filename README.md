@@ -2,7 +2,7 @@
 
 An in-game automation helper for **Dirt Clicker**. Website: [eyyminda.github.io/DirtAutopilot](https://eyyminda.github.io/DirtAutopilot/) · Download: [Nexus Mods](https://www.nexusmods.com/dirtclicker/mods/1) or [GitHub releases](https://github.com/eyyMinda/DirtAutopilot/releases/latest). Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
 
-![Dirt Autopilot in a run: the prestige alert naming the best buy, pals named after the game's credits, and the next-milestone bar](docs/images/main.jpg)
+![Dirt Autopilot in a run: the prestige alert naming the best buy, the Sand Mines timer stopped at 00.00 for a PERFECT, and the next-milestone bar under dirt per second](docs/images/main.jpg)
 
 Most features are **off until you switch them on**, in **Options → Dirt Autopilot**. On from the start: sweep guides, spending sand, legendary protection, putting hats on pals, the next-milestone bar and the prestige alert.
 
@@ -33,8 +33,6 @@ Performance, Hats on pals and Achievements are cards you can fold away; their sw
 | **Performance:** 20 FPS to 80 FPS late in the game | **Options → Dirt Autopilot** |
 | ![The Quality of life group: next milestone, prestige alert, legendary protection, popup skipping and the Achievements card](docs/images/qol.jpg) | ![The Session stats tab with its C hotkey, and the prestige alert naming the best buy](docs/images/session-stats.jpg) |
 | **Quality of life** | **Session stats tab** and the prestige alert |
-| ![The Sand Mines timer stopped at 00.00 for a PERFECT](docs/images/timer-minigame.jpg) | |
-| **Sand Mines:** stopped at 00.00, PERFECT | |
 
 ## Install
 
