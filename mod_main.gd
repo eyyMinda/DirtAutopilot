@@ -19,11 +19,14 @@ const Guides := preload("ui/guides.gd")
 const Toast := preload("ui/toast.gd")
 const Alert := preload("ui/alert.gd")
 const MilestoneBar := preload("ui/milestone_bar.gd")
+const StatsTab := preload("ui/stats_tab.gd")
 
 const LOG_NAME := "eyyMinda-DirtAutopilot"
 const TAB_TITLE := "Dirt Autopilot"
 const SAVE_DELAY_SEC := 0.5
 const FIELD_PATH := "Base/Game/Panels/Left"
+## The "N dirt per second" row; its parent VBox (Data) also holds the dirt count.
+const DPS_PATH := "Base/Game/Data/DirtPerSecond"
 ## Used for logging when the loader provides it; print() otherwise.
 const ML_LOG_PATH := "res://addons/mod_loader/api/log.gd"
 
@@ -39,6 +42,9 @@ var achievements: Achievements
 var fps_saver: FpsSaver
 var updates: UpdateCheck
 var milestone_bar: MilestoneBar
+var stats_tab: StatsTab
+## Settings sections the player opened (title -> closed), for this run.
+var folds: Dictionary = {}
 ## Set by the settings screen while it waits for a new hotkey.
 var rebinding := false
 var version := ""
@@ -72,6 +78,10 @@ func _ready() -> void:
 	updates = _add(UpdateCheck.new(), "UpdateCheck")
 	toast = _add(Toast.new(), "Toast")
 	alert = _add(Alert.new(), "Alert")
+	stats_tab = StatsTab.new()
+	stats_tab.stats = stats
+	stats_tab.settings = settings
+	_add(stats_tab, "StatsTab")
 	_set_alert_field()
 	auto.relic_opened.connect(stats.add.bind("relics_opened"))
 	auto.chest_opened.connect(stats.add.bind("chests"))
@@ -128,6 +138,8 @@ func _on_setting_changed(key: String) -> void:
 			_set_guides(v)
 		"milestone_bar":
 			_set_milestone_bar(v)
+		"key_stats":
+			stats_tab.update_hint()
 
 
 func _set_guides(on: bool) -> void:
@@ -155,7 +167,14 @@ func _set_milestone_bar(on: bool) -> void:
 		await get_tree().process_frame
 	if milestone_bar != bar:
 		return
-	# The screen corner if the game's layout changes.
+	# Under dirt per second, in the game's own column so the gap matches.
+	var dps := GM.ui.get_node_or_null(DPS_PATH)
+	if dps and dps.get_parent() is VBoxContainer:
+		bar.in_column = true
+		dps.get_parent().add_child(bar)
+		dps.get_parent().move_child(bar, dps.get_index() + 1)
+		return
+	# Bottom-left of the field, or the screen corner, if the game's layout changes.
 	var parent: Node = _field()
 	if parent == null:
 		parent = CanvasLayer.new()
@@ -188,14 +207,6 @@ func _on_update_found(new_version: String, url: String) -> void:
 		"You have v%s. Click to open the download page." % version, OS.shell_open.bind(url), 12.0)
 
 
-func active_feature_labels() -> Array:
-	var out := []
-	for key in settings.feature_keys():
-		if settings.get_value(key):
-			out.append(settings.entry(key).label)
-	return out
-
-
 func _input(event: InputEvent) -> void:
 	var k := event as InputEventKey
 	if k == null or !k.pressed or k.echo or rebinding or k.keycode == KEY_NONE:
@@ -205,10 +216,9 @@ func _input(event: InputEvent) -> void:
 		return
 	var code := int(k.keycode)
 
-	if code == settings.get_value("key_status"):
-		var on := active_feature_labels()
-		var line := "On: " + ", ".join(on) if !on.is_empty() else "Nothing is switched on."
-		_show(line + "\n" + stats.summary(), true)
+	if code == settings.get_value("key_stats"):
+		if !stats_tab.toggle():
+			return
 	elif code == settings.get_value("key_settings"):
 		toggle_settings()
 	else:
@@ -279,10 +289,9 @@ func toggle_settings() -> void:
 			options.toggle_on()
 
 
-func _show(text: String, force := false) -> void:
-	log_info(text.replace("\n", " · "))
-	if force or settings.get_value("toasts"):
-		toast.show_text(text)
+func _show(text: String) -> void:
+	log_info(text)
+	toast.show_text(text)
 
 
 func _script_dir() -> String:

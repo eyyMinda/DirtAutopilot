@@ -9,6 +9,9 @@ const DONE_COLOR := Color(0.55, 0.85, 0.45)
 var ach
 var s
 
+## For the settings fold's header; 0 until a save is loaded.
+var done := 0
+var total := 0
 var _summary: Label
 var _show_done: CheckButton
 var _list: VBoxContainer
@@ -47,12 +50,14 @@ func setup(achievements, settings) -> void:
 func refresh() -> void:
 	if !ach.is_ready():
 		_summary.text = "Load a save to see your achievements."
+		done = 0
+		total = 0
 		_show_done.visible = false
 		_rebuild([], "not ready")
 		return
 	_show_done.visible = true
-	var done := 0
-	var total := 0
+	done = 0
+	total = 0
 	var shown := []
 	for e in ach.LIST:
 		if !GM.ach.key_exists(e.key):

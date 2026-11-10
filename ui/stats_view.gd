@@ -1,85 +1,58 @@
 extends VBoxContainer
-## Session stats as tiles: three large headline numbers, then a grid of small
-## tiles with the game's own icons. Columns follow the available width.
+## Session stats for the game's narrow right panel (~240 px): a headline card
+## (play time large, dirt earned and dirt per hour side by side), then grouped
+## cards of one-line rows (icon, name, value on the right). Long names are
+## shortened with "…" instead of widening the panel.
 
-const TILE_MIN_WIDTH := 150
-const HERO_SCALE := 1.5
-const CAPTION_SCALE := 0.8
-const ICON_PX := 22
+const ICON_PX := 18
+const HERO_PX := 30
+const HERO_SMALL_PX := 18
+const ROW_PX := 16
+const CAPTION_PX := 14
+const FAINT := Color(1, 1, 1, 0.6)
+const ROW_ALT := Color(1, 1, 1, 0.05)
+const CARD_BG := Color(0, 0, 0, 0.3)
+const CARD_BORDER := Color(1, 1, 1, 0.08)
 
 var stats
 
 var _hero_values: Array[Label] = []
 var _tile_values: Array[Label] = []
-var _grid: GridContainer
 var _textures: Dictionary = {}
 
 
 func setup(session_stats, on_reset: Callable) -> void:
 	stats = session_stats
-	add_theme_constant_override("separation", 8)
+	add_theme_constant_override("separation", 6)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-	var hero := HBoxContainer.new()
-	hero.add_theme_constant_override("separation", 8)
-	add_child(hero)
-	for item in stats.hero():
-		var tile := _tile(0.35)
-		tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var v := VBoxContainer.new()
-		v.alignment = BoxContainer.ALIGNMENT_CENTER
-		v.add_theme_constant_override("separation", 0)
-		tile.add_child(v)
-		var row := HBoxContainer.new()
-		row.alignment = BoxContainer.ALIGNMENT_CENTER
-		row.add_theme_constant_override("separation", 6)
-		if item.has("icon"):
-			row.add_child(_icon(item.icon))
-		var value := Label.new()
-		value.set_meta("scale", HERO_SCALE)
-		row.add_child(value)
-		v.add_child(row)
-		v.add_child(_caption(item.label, true))
-		hero.add_child(tile)
-		_hero_values.append(value)
+	_add_hero(stats.hero())
 
-	_grid = GridContainer.new()
-	_grid.add_theme_constant_override("h_separation", 8)
-	_grid.add_theme_constant_override("v_separation", 8)
+	var rows: VBoxContainer
+	var alt := false
 	for item in stats.tiles():
-		var tile := _tile(0.22)
-		tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 8)
-		row.add_child(_icon(item.get("icon", [])))
-		var v := VBoxContainer.new()
-		v.add_theme_constant_override("separation", 0)
-		var value := Label.new()
-		v.add_child(value)
-		v.add_child(_caption(item.label))
-		row.add_child(v)
-		tile.add_child(row)
-		_grid.add_child(tile)
-		_tile_values.append(value)
-	add_child(_grid)
+		if item.has("group") or rows == null:
+			_add_group_title(item.get("group", ""))
+			var card := _card(4)
+			rows = VBoxContainer.new()
+			rows.add_theme_constant_override("separation", 0)
+			card.add_child(rows)
+			add_child(card)
+			alt = false
+		rows.add_child(_row(item, alt))
+		alt = !alt
 
+	var gap := Control.new()
+	gap.custom_minimum_size = Vector2(0, 4)
+	add_child(gap)
 	var reset := Button.new()
 	reset.text = "Reset stats"
 	reset.focus_mode = Control.FOCUS_NONE
-	reset.size_flags_horizontal = Control.SIZE_SHRINK_END
+	reset.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	reset.pressed.connect(on_reset)
 	add_child(reset)
 
-	resized.connect(_update_columns)
 	refresh()
-
-
-func _ready() -> void:
-	# The theme's font size is only known once the view is in the tree.
-	var base := get_theme_font_size("font_size", "Label")
-	for l in find_children("*", "Label", true, false):
-		if l.has_meta("scale"):
-			l.add_theme_font_size_override("font_size", int(base * float(l.get_meta("scale"))))
 
 
 func refresh() -> void:
@@ -91,32 +64,103 @@ func refresh() -> void:
 		_tile_values[i].text = tiles[i].value
 
 
-func _update_columns() -> void:
-	_grid.columns = clampi(int(size.x / TILE_MIN_WIDTH), 1, 4)
+## hero[0] large and centred; hero[1..2] in two halves below it.
+func _add_hero(hero: Array) -> void:
+	var card := _card(8)
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 2)
+	card.add_child(v)
+
+	var top := _label(HERO_PX, HORIZONTAL_ALIGNMENT_CENTER)
+	v.add_child(top)
+	v.add_child(_label(CAPTION_PX, HORIZONTAL_ALIGNMENT_CENTER, hero[0].label.to_upper(), FAINT))
+	_hero_values.append(top)
+
+	var sep := HSeparator.new()
+	sep.modulate = Color(1, 1, 1, 0.4)
+	v.add_child(sep)
+
+	var halves := HBoxContainer.new()
+	halves.add_theme_constant_override("separation", 6)
+	v.add_child(halves)
+	for i in range(1, hero.size()):
+		var half := VBoxContainer.new()
+		half.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		half.add_theme_constant_override("separation", 0)
+		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_CENTER
+		row.add_theme_constant_override("separation", 4)
+		if hero[i].has("icon"):
+			row.add_child(_icon(hero[i].icon))
+		var value := _label(HERO_SMALL_PX, HORIZONTAL_ALIGNMENT_CENTER)
+		row.add_child(value)
+		half.add_child(row)
+		half.add_child(_label(CAPTION_PX, HORIZONTAL_ALIGNMENT_CENTER, hero[i].label, FAINT, true))
+		halves.add_child(half)
+		_hero_values.append(value)
+	add_child(card)
 
 
-func _tile(alpha: float) -> PanelContainer:
+func _add_group_title(text: String) -> void:
+	if text.is_empty():
+		return
+	var l := _label(CAPTION_PX, HORIZONTAL_ALIGNMENT_LEFT, text.to_upper(), FAINT)
+	# A little air above every group but the first.
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_top", 6)
+	m.add_theme_constant_override("margin_left", 2)
+	m.add_child(l)
+	add_child(m)
+
+
+func _row(item: Dictionary, alt: bool) -> Control:
 	var p := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0, 0, 0, alpha)
-	sb.border_color = Color(1, 1, 1, 0.08)
+	sb.bg_color = ROW_ALT if alt else Color(0, 0, 0, 0)
+	sb.set_corner_radius_all(4)
+	sb.content_margin_left = 6
+	sb.content_margin_right = 6
+	sb.content_margin_top = 3
+	sb.content_margin_bottom = 3
+	p.add_theme_stylebox_override("panel", sb)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 6)
+	row.add_child(_icon(item.get("icon", [])))
+	row.add_child(_label(ROW_PX, HORIZONTAL_ALIGNMENT_LEFT, item.label, Color.WHITE, true))
+	var value := _label(ROW_PX, HORIZONTAL_ALIGNMENT_RIGHT)
+	value.size_flags_horizontal = Control.SIZE_SHRINK_END
+	row.add_child(value)
+	p.add_child(row)
+	_tile_values.append(value)
+	return p
+
+
+func _card(margin: int) -> PanelContainer:
+	var p := PanelContainer.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = CARD_BG
+	sb.border_color = CARD_BORDER
 	sb.set_border_width_all(1)
 	sb.set_corner_radius_all(6)
-	sb.content_margin_left = 10
-	sb.content_margin_right = 10
-	sb.content_margin_top = 6
-	sb.content_margin_bottom = 6
+	sb.set_content_margin_all(margin)
 	p.add_theme_stylebox_override("panel", sb)
 	return p
 
 
-func _caption(text: String, center := false) -> Label:
+## shrink: fills the free width and cuts long text with "…" instead of
+## pushing the panel wider.
+func _label(px: int, align: HorizontalAlignment, text := "", color := Color.WHITE, shrink := false) -> Label:
 	var l := Label.new()
 	l.text = text
-	l.modulate = Color(1, 1, 1, 0.6)
-	l.set_meta("scale", CAPTION_SCALE)
-	if center:
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.horizontal_alignment = align
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.modulate = color
+	l.add_theme_font_size_override("font_size", px)
+	if shrink:
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		l.clip_text = true
+		l.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		l.custom_minimum_size = Vector2(0, 0)
 	return l
 
 

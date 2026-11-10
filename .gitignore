@@ -10,3 +10,6 @@ local/
 
 # Godot editor import files
 *.import
+
+# Godot 4.4+ editor UID sidecars (scripts load by res:// path)
+*.uid
