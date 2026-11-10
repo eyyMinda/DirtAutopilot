@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.7
+- **Pal names:** pals that get a hat are named after people from the game's credits, and no two pals share a name. The first one is always **Todd**, which unlocks the "name a pal Todd" achievement.
+
 ## 1.0.6
 - **Spend sand on upgrades:** picks which Sand Mines upgrades to fill, so you don't have to click them. All upgrades fill at once.
 - Settings: the Sand Mines timer and sand upgrades now share a **Sand Mines** section; the relic minigame solver moved to **Relics & items**.
