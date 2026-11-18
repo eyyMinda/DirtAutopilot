@@ -7,7 +7,7 @@ const PATH := "user://DirtAutopilot/settings.json"
 const LEGACY_PATH := "user://DirtSweeper/settings.json"
 ## Bump when keys are renamed (add them to MIGRATIONS) or a saved value must
 ## go back to its default (RESETS).
-const VERSION := 5
+const VERSION := 7
 
 ## Settings in display order; the settings screen and hotkeys are built from this.
 ## Entries: {group} (big heading over several sections), {section}, {view}
@@ -24,9 +24,6 @@ const SCHEMA: Array[Dictionary] = [
 
 	# Up top: one row while closed, and the first thing to reach for late game.
 	{"section": "Performance", "fold": true},
-	{"key": "perf_no_particles", "default": false, "all": false,
-		"label": "Skip flying dirt and worms",
-		"desc": "Dirt and worms land on your counter at once instead of flying there. The biggest FPS saver late in the game."},
 	{"key": "perf_no_effects", "default": false, "all": false,
 		"label": "Hide dig effects",
 		"desc": "No dust puffs, zap lines or item pops when tools trigger."},
@@ -51,8 +48,6 @@ const SCHEMA: Array[Dictionary] = [
 	{"key": "sweep_enabled", "default": false, "hotkey_of": "key_sweep",
 		"label": "Auto-sweep",
 		"desc": "Moves the hover circle onto tools that are ready, so they trigger without you moving the mouse."},
-	{"key": "sweep_guides", "default": true, "hotkey_of": "key_guides", "all": false,
-		"label": "Show sweep guides"},
 
 	{"section": "Sand Mines"},
 	{"key": "timer_game", "default": false, "hotkey_of": "key_timer",
@@ -61,6 +56,30 @@ const SCHEMA: Array[Dictionary] = [
 	{"key": "sand_auto", "default": true,
 		"label": "Spend sand on upgrades",
 		"desc": "Fills every sand upgrade, so you don't have to click them."},
+
+	{"section": "Shopping"},
+	{"key": "shop_buy", "default": false,
+		"label": "Buy from the shop and skill tree",
+		"desc": "Buys whatever pays for itself fastest, based on what each tool earns this run. Saves up when something better is less than 30 s away. Also in the Autopilot tab."},
+	{"key": "shop_no_fox", "default": true, "requires": "shop_buy",
+		"label": "Skip fox pals for now",
+		"desc": "No fox pals or fox upgrades while Full bag or Legendary bag is still missing, so they don't sell the stacks you're growing."},
+	{"key": "shop_hats", "default": false, "requires": "shop_buy",
+		"label": "Buy hats",
+		"desc": "One at a time, only when no bought hat is waiting for a pal."},
+
+	{"section": "Prestige"},
+	{"key": "prestige_buy", "default": false,
+		"label": "Buy prestige upgrades",
+		"desc": "Spends worms on the advisor's BEST pick whenever you have enough."},
+	{"key": "auto_prestige", "default": false, "all": false,
+		"label": "Prestige by itself",
+		"desc": "Once new prestige upgrades are affordable and the run is slowing down (at least 5 minutes in). The prestige tree then waits for you to press Play, unless the next run starts by itself."},
+	{"key": "auto_restart", "default": false, "requires": "auto_prestige", "all": false,
+		"label": "Start the next run by itself",
+		"desc": "Presses Play in the prestige tree after a couple of seconds, in the world picked below."},
+	{"key": "restart_world", "default": "", "choices": "world", "requires": "auto_restart",
+		"label": "World for the next run"},
 
 	{"section": "Relics"},
 	{"key": "relic_mg_solve", "default": false,
@@ -114,8 +133,8 @@ const SCHEMA: Array[Dictionary] = [
 
 	{"section": "Hotkeys"},
 	{"key": "key_sweep", "default": KEY_F5, "hotkey": true, "label": "Auto-sweep"},
-	{"key": "key_guides", "default": KEY_F6, "hotkey": true, "label": "Sweep guides"},
 	{"key": "key_timer", "default": KEY_F7, "hotkey": true, "label": "Sand Mines timer"},
+	{"key": "key_autopilot", "default": KEY_A, "hotkey": true, "label": "Autopilot tab"},
 	{"key": "key_stats", "default": KEY_C, "hotkey": true, "label": "Session stats tab"},
 	{"key": "key_settings", "default": KEY_F9, "hotkey": true, "label": "Open these settings"},
 	{"view": "hotkey_help"},
@@ -127,7 +146,6 @@ const SCHEMA: Array[Dictionary] = [
 ]
 
 const MIGRATIONS := {
-	"guides": "sweep_guides",
 	"timer_enabled": "timer_game",
 	"mg_solve": "relic_mg_solve",
 	"relics_auto": "relics_open",
@@ -137,10 +155,13 @@ const MIGRATIONS := {
 
 ## Keys whose saved value is dropped when the file is older than the version:
 ## key_stats was Insert in pre-release 1.1.3 builds, now C.
-const RESETS := {"key_stats": 5}
+const RESETS := {"key_stats": 5, "key_autopilot": 7}
 
 var values: Dictionary = {}
 var dirty := false
+## perf_no_particles was on in a pre-1.3 settings file; the game's own Particles
+## option replaced it (features/fps_saver.gd switches that off once instead).
+var legacy_no_particles := false
 var _entries: Dictionary = {}
 
 
@@ -234,6 +255,8 @@ func load_file() -> String:
 	for key in RESETS:
 		if int(data.get("version", 1)) < RESETS[key]:
 			data.erase(key)
+
+	legacy_no_particles = int(data.get("version", 1)) < 6 and data.get("perf_no_particles", false) == true
 
 	for key in _entries:
 		if !data.has(key):

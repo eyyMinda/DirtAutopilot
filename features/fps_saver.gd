@@ -1,11 +1,9 @@
 extends Node
 ## FPS savers for the late game, all switchable and fully undone when off.
 ##
-## Flying dirt/worms: the game only adds a particle's dirt when it reaches the
-## counter (ui_overlay_particles.gd, Point.end()), so the particles can't just be
-## hidden. Their processing is switched off instead and every new particle is
-## paid out at once. The per-particle loop in GDScript is what gets slow with
-## thousands of tools.
+## Flying dirt/worms/sand: the game's own Particles option (1.3+, Options > Video)
+## skips creating them, which beats anything a mod can do afterwards. Players who
+## had the old perf_no_particles setting get that option switched off once.
 ##
 ## Effects: dust puffs, zap lines and item pops come from GM.pool and are purely
 ## visual, so their pooled nodes are kept hidden. Their tweens still finish and
@@ -19,7 +17,6 @@ const EFFECT_TYPES := ["DIG_EFFECT", "DIG_EFFECT_CRIT", "ZAP", "ITEM_POP"]
 
 var s
 
-var _particles_off := false
 var _effects_off := false
 ## Pool sizes already hidden, so the pool is only walked again after it grows.
 var _hidden_counts: Dictionary = {}
@@ -53,7 +50,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if !GM.is_app_init or !is_instance_valid(GM.ui):
 		return
-	_update_particles(s.get_value("perf_no_particles"))
+	if s.legacy_no_particles:
+		_native_particles_off()
 	_update_effects(s.get_value("perf_no_effects"))
 	_rewalk_t -= delta
 	var rewalk := _rewalk_t <= 0.0
@@ -64,32 +62,14 @@ func _process(delta: float) -> void:
 	_update_sell_pops()
 
 
-func _overlays() -> Array:
-	var out := []
-	for o in [GM.ui.overlay_particles_dirt, GM.ui.overlay_particles_worms]:
-		if is_instance_valid(o):
-			out.append(o)
-	return out
-
-
-func _update_particles(off: bool) -> void:
-	if off != _particles_off:
-		_particles_off = off
-		for o in _overlays():
-			o.set_process(!off)
-			o.visible = !off
-	if !off:
+## Carries the old "Skip flying dirt and worms" choice over to the game's option.
+func _native_particles_off() -> void:
+	var btn = GM.ui.options.get("btn_particles") if is_instance_valid(GM.ui.options) else null
+	if btn == null:
 		return
-	for o in _overlays():
-		if o.points.is_empty():
-			continue
-		# Paying out can spawn new particles (signals), so work on a copy.
-		var pts: Array = o.points.duplicate()
-		o.points.clear()
-		o.point_index_remove.clear()
-		o.__flush()
-		for p in pts:
-			p.end()
+	s.legacy_no_particles = false
+	btn.button_pressed = false # emits toggled: sets GM.particles_enabled and user_data
+	GM.data.user_data_save()
 
 
 func _update_effects(off: bool) -> void:

@@ -6,6 +6,7 @@ extends Node
 ## UIGame.tab_switch() only knows its TabType enum, so showing this page makes
 ## it the game's tab_con_current with tab_type_current = -1 (like at start):
 ## the game then hides it itself when any of its tabs is clicked.
+## ui/autopilot_tab.gd reuses this for the Autopilot tab (title, icon, view, hotkey).
 
 const StatsView := preload("stats_view.gd")
 const Settings := preload("../core/settings.gd")
@@ -15,18 +16,24 @@ const BTN_PARENT := "Panels/Right/MainButtons/V/M/M/V"
 const VIEW_PARENT := "Panels/Right/M/V/View/M"
 const TITLE := "Session stats"
 const REFRESH_SEC := 0.5
-## The game's button sheet: 28 px frames, black outline, light grey fill.
+## The game's button sheet: 28 px frames, black outline, light grey fill. The mod's
+## tabs are filled with the mod's gold instead, so they read as added by the mod and don't
+## blend into the green/brown/orange worlds.
 const ICON_PX := 28
 const OUTLINE := Color8(0, 0, 0)
-const FILL := Color8(173, 173, 173)
+const FILL := Color(0.96, 0.76, 0.42)
 
 var stats
 var settings
+var title := TITLE
+var hotkey_key := "key_stats"
+## Put this tab's button above the mod's other tab buttons.
+var first := false
 
 ## BtnSprMain (the game's class), untyped for its exported texture/frame.
 var _btn
 var _page: Control
-var _view: StatsView
+var _view  # StatsView or AutopilotView: Control with refresh()
 var _prev_tab := 0
 var _refresh_t := 0.0
 
@@ -38,21 +45,27 @@ func _ready() -> void:
 	var btn_parent := game.get_node_or_null(BTN_PARENT)
 	var view_parent := game.get_node_or_null(VIEW_PARENT)
 	if btn_parent == null or view_parent == null or !ResourceLoader.exists(BTN_SCENE):
-		push_warning("[eyyMinda-DirtAutopilot] The game's tab panel changed; no Session stats tab.")
+		push_warning("[eyyMinda-DirtAutopilot] The game's tab panel changed; no %s tab." % title)
 		return
 
+	var node_name := "DirtAutopilot" + title.replace(" ", "")
 	_btn = (load(BTN_SCENE) as PackedScene).instantiate()
-	_btn.name = "DirtAutopilotStats"
-	_btn.texture = _stopwatch()
+	_btn.name = node_name
+	_btn.texture = _icon()
 	_btn.hframes = 1
 	_btn.vframes = 1
 	_btn.frame = 0
 	btn_parent.add_child(_btn)
+	if first:
+		for sibling in btn_parent.get_children():
+			if sibling != _btn and str(sibling.name).begins_with("DirtAutopilot"):
+				btn_parent.move_child(_btn, sibling.get_index())
+				break
 	update_hint()
 	_btn.on_pressed.connect(show_page)
 
 	var scroll := ScrollContainer.new()
-	scroll.name = "DirtAutopilotStats"
+	scroll.name = node_name
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.visible = false
 	_page = scroll
@@ -60,8 +73,7 @@ func _ready() -> void:
 	pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	pad.add_theme_constant_override("margin_right", 10)
 	_page.add_child(pad)
-	_view = StatsView.new()
-	_view.setup(stats, _on_reset)
+	_view = _make_view()
 	pad.add_child(_view)
 	view_parent.add_child(_page)
 
@@ -75,12 +87,22 @@ func _process(delta: float) -> void:
 		_view.refresh()
 
 
+func _make_view() -> Control:
+	var v := StatsView.new()
+	v.setup(stats)
+	return v
+
+
+func _icon() -> Texture2D:
+	return _stopwatch()
+
+
 ## "Session stats [C]", like the game's own tab hints.
 func update_hint() -> void:
 	if _btn == null:
 		return
-	var key: int = settings.get_value("key_stats") if settings else KEY_NONE
-	_btn.hover_info.text = TITLE if key == KEY_NONE else "%s [%s]" % [TITLE, Settings.key_name(key)]
+	var key: int = settings.get_value(hotkey_key) if settings else KEY_NONE
+	_btn.hover_info.text = title if key == KEY_NONE else "%s [%s]" % [title, Settings.key_name(key)]
 
 
 func is_open() -> bool:
@@ -110,16 +132,11 @@ func show_page() -> void:
 	game.tab_con_current = _page
 	game.tab_type_current = -1
 	_page.visible = true
-	game.label_panel_name.text = TITLE
+	game.label_panel_name.text = title
 	var bg: Control = game.bg_selected
 	var t := bg.create_tween()
 	t.tween_property(bg, "position", _btn.position, 0.125).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	_refresh_t = 0.0
-
-
-func _on_reset() -> void:
-	stats.reset()
-	_view.refresh()
 
 
 ## A stopwatch in the style of the game's tab icons.

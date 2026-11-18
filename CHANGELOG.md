@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.2.0
+- **Shopping:** buys from the shop and the skill tree by itself, picking whatever pays for itself fastest based on what each tool earns this run. It saves up when something better is less than 30 s away, and favours finishing a set of three for void tools. Off by default.
+- Release zip includes a plain **README.txt** with install steps for DirtLoader and the Godot Mod Loader.
+- **Skip fox pals for now:** no fox pals or fox upgrades while Full bag or Legendary bag is still missing (on by default). **Buy hats** is optional and waits until the last hat has found a pal.
+- **Prestige upgrades:** spends worms on the advisor's BEST pick whenever you can afford it. **Prestige by itself** (off by default) prestiges once new upgrades are affordable and the run slows down. The prestige tree then waits for you, unless **Start the next run by itself** is on: then it presses Play in the world you pick (by default the latest unlocked one before the Void).
+- **Autopilot tab:** next to Session stats in the game's tab column (or **A**): a big AUTO-BUY switch, the next purchase with a countdown and payback time, the queue after it and prestige status, with the shop options, the next buys and what was just bought in one card, then the other settings grouped into four foldable cards of two-column switches (hotkeys, achievements and reset stay in Options).
+- **Fast buying:** it buys in bursts (dozens per tick when the dirt is there), so it keeps up early in a run after a big prestige. Repeat buys show as one line ("Spoon x12").
+- **Next relic and next chest:** two bars right under the dirt and sand counters: how close the next relic is, and the next chest with its icon (hidden once every chest has been opened in earlier runs). Details on hover.
+- **Settings moved to the Autopilot tab:** every switch now lives there, each card with a switch for all of it. **Options → Dirt Autopilot** keeps Enable all / Disable all, the achievements checklist, hotkeys and reset.
+- **Sweep guides removed** (and their F6 hotkey): the dots and ring over the field were only for watching the sweeper.
+- **Session stats per save slot:** each save keeps its own run and all-time stats; loading another slot switches over.
+- The mod's tabs have gold icons, so they stand out from the game's own, with Autopilot first. The tab shows when the shop is sold out and the skill tree fully upgraded.
+
+## 1.1.9
+- **Session stats per run:** the tab now has **Run** (since your last prestige, the default) and **All time** views. All-time totals are kept between game launches (`DirtAutopilot/stats.json`). The reset button is gone.
+- **Tools this run:** the Run view ranks your tools by the dirt they earned, with name, icon, share in % and a bar, dirt earned and dirt/s over the last minute, so you can tell them apart without the game graph's colours.
+- **Read from your save:** Minigames done, Chests opened and Sand Mines upgrades maxed show your save's progress (e.g. "5 / 8"), Hats worn counts the pals wearing a hat, and All time shows the achievements you own out of all of them. Since game 1.3 minigames and chests are done once per save, so a new run used to show "0 / 0".
+- Prestiges only show in All time.
+- Clearer icons: the items icon was cut off, and small icons now fill their space; Void tools fused has the void icon.
+
+## 1.1.8
+- **New 1.3 achievements in the list:** "Create 10 void …" for every tool that can fuse (with "n / 10" progress) and the Sandy ones for every Sand Mines upgrade (earned by "Spend sand on upgrades").
+- **Prestige advisor knows Void tools:** void unlocks and void dirt upgrades now rank near the top.
+- **Faster relic opening:** relics you've found before open in 0.25 s, like in the game.
+- **Session stats:** new "Void tools fused" and "Sand dug" rows.
+
+## 1.1.7
+- **Updated for Dirt Clicker 1.3.1.**
+- **Skip flying dirt and worms removed:** the game's own **Particles** option (Options > Video) does the same job faster. If you had the mod's option on, the game's one is switched off for you once.
+- Fixed the milestone bar breaking on 1.3 (chests now open once for good, and the bar skips them like the game does).
+- Hats on pals works with the game's new "name pals" option off (no names are given then).
+- Achievements: **Legendary bag** progress shows the game's real goal (64) instead of the new max stack size, and **Full bag** and **Legendary hourglass** were added to the list.
+
 ## 1.1.6
 - **Relic and achievement popups are skipped without a flash:** with "Skip relic popups" or "Skip achievement popups" on, the popup is closed before it's ever drawn, instead of showing for a split second.
 - Fixed an error in the log when the last item of a stack was sold by holding it, sold by a fox pal or opened as a relic (a game bug the mod now works around for every item, not only relics).

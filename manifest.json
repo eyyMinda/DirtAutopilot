@@ -1,8 +1,8 @@
 {
 	"name": "DirtAutopilot",
 	"namespace": "eyyMinda",
-	"version_number": "1.1.6",
-	"description": "Automation helper: auto-sweeps ready tools, plays the Sand Mines timer and relic minigames, spends sand on upgrades, opens relics and chests, grabs the coffee bean, puts hats on the pals they help, protects legendary items, shows the next milestone, alerts you when prestige is worth it, adds a Session stats tab and FPS savers for the late game. Settings in Options > Dirt Autopilot.",
+	"version_number": "1.2.0",
+	"description": "Automation helper for Dirt Clicker 1.3.1+: buys from the shop and skill tree, spends worms on prestige upgrades and can prestige for you, auto-sweeps ready tools, plays the Sand Mines timer and relic minigames, spends sand, opens relics and chests, grabs the coffee bean, puts hats on pals, protects legendary items, shows the next relic and chest, and adds Autopilot and Session stats tabs. Hotkeys and achievements in Options > Dirt Autopilot.",
 	"website_url": "https://github.com/eyyMinda/DirtAutopilot",
 	"dependencies": [],
 	"extra": {
@@ -23,7 +23,7 @@
 				"7.0.1"
 			],
 			"compatible_game_version": [
-				"1.2.4"
+				"1.3.1"
 			],
 			"config_schema": {}
 		}

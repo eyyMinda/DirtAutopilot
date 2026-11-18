@@ -156,51 +156,50 @@ static func worms_icon() -> Texture2D:
 	return load(WORMS_ICON) if ResourceLoader.exists(WORMS_ICON) else null
 
 
-## The next point on the game's milestone timeline:
-## {kind: "chest"/"minigame"/"relic", key, name, icon (null = random), amount, goal, progress 0..1}.
-## Empty when there's nothing left, or before the first item is dug up (the
-## timeline only gets its final dirt values then).
-func next_milestone() -> Dictionary:
+## The next relic and the next chest on the game's milestone timeline:
+## {amount, relic: {start, goal, name, icon}, chest: {start, goal, name, icon}}.
+## start = goal of the last one of that kind reached (or 0). relic/chest is {}
+## when none is left; chests opened in earlier runs never come back (1.3+).
+## Empty before the first item is dug up (the timeline only gets its final dirt
+## values then).
+func next_by_kind() -> Dictionary:
 	var m = GM.milestones
 	if !is_instance_valid(m) or m.timeline == null or m.timeline.currency == null:
 		return {}
 	if GM.inv.item_dig_out_first.is_empty():
 		return {}
 	var amount: float = m.timeline.currency.amount_overall
-	var next = null
-	var prev_goal := 0.0
+	var out := {"amount": amount, "relic": {}, "chest": {}}
+	var start := {"relic": 0.0, "chest": 0.0}
+	var next := {"relic": null, "chest": null}
 	for p in m.timeline.points:
-		if !p.chest_key.is_empty() and GM.chest.chest_is_opened(p.chest_key):
+		var kind := "chest" if !p.chest_key.is_empty() else "relic"
+		if kind == "chest" and GM.badges.badge_is_own_max(GM.chest.data_raw[p.chest_key].get("KEY_BADGE_REWARD", "")):
 			continue
 		var goal: float = p.currency_overall_goal
 		if goal > amount:
-			if next == null or goal < next.currency_overall_goal:
-				next = p
-		elif goal > prev_goal:
-			prev_goal = goal
-	if next == null:
-		return {}
-
-	var info := {"amount": amount, "goal": next.currency_overall_goal}
-	info.progress = clampf((amount - prev_goal) / maxf(next.currency_overall_goal - prev_goal, 1.0), 0.0, 1.0)
-	if !next.chest_key.is_empty():
-		info.kind = "chest"
-		info.key = next.chest_key
-		info.name = "%s chest" % next.chest_key.capitalize()
-		info.icon = _icon("chest:" + next.chest_key)
-	elif GM.inv.item_is_game(next.relic_key):
-		# Minigame relics have a fixed spot on the timeline.
-		info.kind = "minigame"
-		info.key = next.relic_key
-		info.name = tr(GM.inv.item_name(next.relic_key))
-		info.icon = _icon("item:" + next.relic_key)
-	else:
-		# Dug-up relics are shuffled into their slots, so which one comes next is random.
-		info.kind = "relic"
-		info.key = ""
-		info.name = "A random relic"
-		info.icon = null
-	return info
+			if next[kind] == null or goal < next[kind].currency_overall_goal:
+				next[kind] = p
+		elif goal > start[kind]:
+			start[kind] = goal
+	for kind in ["relic", "chest"]:
+		var p = next[kind]
+		if p == null:
+			continue
+		var info := {"start": start[kind], "goal": p.currency_overall_goal}
+		if kind == "chest":
+			info.name = "%s chest" % p.chest_key.capitalize()
+			info.icon = _icon("chest:" + p.chest_key)
+		elif GM.inv.item_is_game(p.relic_key):
+			# Minigame relics have a fixed spot on the timeline.
+			info.name = tr(GM.inv.item_name(p.relic_key))
+			info.icon = _icon("item:" + p.relic_key)
+		else:
+			# Dug-up relics are shuffled into their slots, so which one is random.
+			info.name = "Relic"
+			info.icon = null
+		out[kind] = info
+	return out
 
 
 ## Cached, since the milestone bar asks every frame.
