@@ -59,7 +59,7 @@ func refresh() -> void:
 	done = 0
 	total = 0
 	var shown := []
-	for e in ach.LIST:
+	for e in ach.entries():
 		if !GM.ach.key_exists(e.key):
 			continue
 		var owned: bool = ach.owned(e.key)

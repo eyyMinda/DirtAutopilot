@@ -23,8 +23,6 @@ var _deadline_msec := 0
 var _physics_frames := 0
 var _skip_until: Dictionary = {}
 var _shape_cache: Dictionary = {}
-## The latest ready_tools() result, for the guides to draw without scanning again.
-var last_ready: Array = []
 
 
 func _ready() -> void:
@@ -44,7 +42,6 @@ func set_enabled(on: bool) -> void:
 func _release() -> void:
 	holding = false
 	covered.clear()
-	last_ready = []
 
 
 func _process(_delta: float) -> void:
@@ -147,7 +144,6 @@ func ready_tools(now: int, rc: float) -> Array:
 			"pos": cs.global_position,
 			"reach": rc + _shape_radius(cs) - MARGIN,
 		})
-	last_ready = out
 	return out
 
 

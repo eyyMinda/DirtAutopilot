@@ -25,6 +25,8 @@ const LIST := [
 	{"key": "FISHING_BAIT"},
 	{"key": "CEREAL_BOX"},
 	{"key": "LEGENDARY_BAG"},
+	{"key": "FULL_BAG"},
+	{"key": "LEGENDARY_HOURGLASS", "auto": "sand_auto"},
 	{"key": "EXPENSIVE_SUIT"},
 	{"key": "SPOONING"},
 	{"key": "IDLE_CUB"},
@@ -86,20 +88,54 @@ func icon(key: String) -> Texture2D:
 	return _icons[key]
 
 
+## LIST plus, per tool/pal (game 1.3+), "fully upgrade in the Sand Mines" and
+## "Create 10 void <tool>".
+static func entries() -> Array:
+	var out: Array = LIST.duplicate()
+	if is_instance_valid(GM.sand):
+		for node_key in GM.sand.node_keys_sand_enabled:
+			out.append({"key": "SANDY_" + node_key, "auto": "sand_auto"})
+	if is_instance_valid(GM.void_fusion):
+		for node_key in GM.void_fusion.node_keys_void_fuse_enabled:
+			out.append({"key": "CREATE_VOID_" + node_key})
+	return out
+
+
 ## "37 / 100" style progress for the ones the game counts, else "".
 static func progress(key: String) -> String:
+	if key.begins_with("CREATE_VOID_"):
+		var count: int = GM.void_fusion.void_node_count(key.trim_prefix("CREATE_VOID_"))
+		return "%d / %d" % [count, goal(key, 10)]
 	match key:
 		"FISHING_BAIT":
 			return "%d / 100" % int(GM.player.currency_worms_dug_up.amount)
 		"CEREAL_BOX":
 			return "%d / 999" % GM.upgrades.spoons_bought_overall
-		"LEGENDARY_BAG":
+		"LEGENDARY_BAG", "FULL_BAG":
 			var best := 0
 			for st: ItemStack in GM.inv.item_stacks:
-				if st.rarity == "LEGENDARY":
+				if key == "FULL_BAG" or st.rarity == "LEGENDARY":
 					best = maxi(best, st.amount)
-			return "%d / %d" % [best, ItemStack.AMOUNT_MAX]
+			return "%d / %d" % [best, goal(key, ItemStack.AMOUNT_MAX)]
+		"LEGENDARY_HOURGLASS":
+			if !GM.sand.is_unlocked:
+				return ""
+			var maxed := 0
+			for slot in GM.sand.slots:
+				if slot.is_max_level:
+					maxed += 1
+			return "%d / %d" % [maxed, GM.sand.slots.size()]
 	return ""
+
+
+## The target in the game's own description ("Own 64 stacks…" -> 64), so the
+## progress follows the game when it changes the number; fallback otherwise.
+static func goal(key: String, fallback: int) -> int:
+	var m := _NUMBER.search(description(key))
+	return int(m.get_string()) if m else fallback
+
+
+static var _NUMBER := RegEx.create_from_string(r"\d+")
 
 
 ## Why the action can't run right now, or "" when it can.

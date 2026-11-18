@@ -15,18 +15,22 @@ const FpsSaver := preload("features/fps_saver.gd")
 const UpdateCheck := preload("core/update_check.gd")
 const SettingsView := preload("ui/settings_view.gd")
 const Icons := preload("ui/icons.gd")
-const Guides := preload("ui/guides.gd")
 const Toast := preload("ui/toast.gd")
 const Alert := preload("ui/alert.gd")
 const MilestoneBar := preload("ui/milestone_bar.gd")
 const StatsTab := preload("ui/stats_tab.gd")
+const AutopilotTab := preload("ui/autopilot_tab.gd")
+const Buyer := preload("features/buyer.gd")
+const PrestigeAuto := preload("features/prestige_auto.gd")
 
 const LOG_NAME := "eyyMinda-DirtAutopilot"
 const TAB_TITLE := "Dirt Autopilot"
 const SAVE_DELAY_SEC := 0.5
 const FIELD_PATH := "Base/Game/Panels/Left"
 ## The "N dirt per second" row; its parent VBox (Data) also holds the dirt count.
-const DPS_PATH := "Base/Game/Data/DirtPerSecond"
+const DATA_PATH := "Base/Game/Data"
+## The milestone bar goes right after the last of these in the game's top-left column.
+const DATA_ANCHORS := ["CurrencySand", "CurrencyDirt", "DirtPerSecond"]
 ## Used for logging when the loader provides it; print() otherwise.
 const ML_LOG_PATH := "res://addons/mod_loader/api/log.gd"
 
@@ -34,7 +38,6 @@ var settings := Settings.new()
 var stats: SessionStats
 var sweeper: Sweeper
 var auto: Automations
-var guides: Guides
 var toast: Toast
 var alert: Alert
 var progress: Progress
@@ -43,6 +46,9 @@ var fps_saver: FpsSaver
 var updates: UpdateCheck
 var milestone_bar: MilestoneBar
 var stats_tab: StatsTab
+var autopilot_tab: AutopilotTab
+var buyer: Buyer
+var prestige_auto: PrestigeAuto
 ## Settings sections the player opened (title -> closed), for this run.
 var folds: Dictionary = {}
 ## Set by the settings screen while it waits for a new hotkey.
@@ -82,6 +88,15 @@ func _ready() -> void:
 	stats_tab.stats = stats
 	stats_tab.settings = settings
 	_add(stats_tab, "StatsTab")
+	buyer = _add(Buyer.new(), "Buyer")
+	buyer.setup(settings, stats)
+	prestige_auto = _add(PrestigeAuto.new(), "PrestigeAuto")
+	prestige_auto.setup(settings)
+	autopilot_tab = AutopilotTab.new()
+	autopilot_tab.settings = settings
+	autopilot_tab.buyer = buyer
+	autopilot_tab.prestige_auto = prestige_auto
+	_add(autopilot_tab, "AutopilotTab")
 	_set_alert_field()
 	auto.relic_opened.connect(stats.add.bind("relics_opened"))
 	auto.chest_opened.connect(stats.add.bind("chests"))
@@ -89,7 +104,7 @@ func _ready() -> void:
 	updates.update_found.connect(_on_update_found)
 
 	settings.changed.connect(_on_setting_changed)
-	for key in ["sweep_enabled", "sweep_guides", "milestone_bar"]:
+	for key in ["sweep_enabled", "milestone_bar"]:
 		_on_setting_changed(key)
 	updates.check(version)
 	_save_t = 0.0
@@ -111,12 +126,6 @@ func _process(delta: float) -> void:
 			_save()
 
 
-func _physics_process(_delta: float) -> void:
-	# The guides are reparented into the world, so they're freed with it on prestige or a world change.
-	if settings.get_value("sweep_guides") and !is_instance_valid(guides):
-		_set_guides(true)
-
-
 func _exit_tree() -> void:
 	if settings.dirty:
 		_save()
@@ -134,23 +143,12 @@ func _on_setting_changed(key: String) -> void:
 	match key:
 		"sweep_enabled":
 			sweeper.set_enabled(v)
-		"sweep_guides":
-			_set_guides(v)
 		"milestone_bar":
 			_set_milestone_bar(v)
 		"key_stats":
 			stats_tab.update_hint()
-
-
-func _set_guides(on: bool) -> void:
-	if is_instance_valid(guides):
-		guides.queue_free()
-	guides = null
-	if on:
-		guides = Guides.new()
-		guides.name = "DirtAutopilotGuides"
-		guides.sweeper = sweeper
-		add_child(guides)
+		"key_autopilot":
+			autopilot_tab.update_hint()
 
 
 func _set_milestone_bar(on: bool) -> void:
@@ -167,13 +165,16 @@ func _set_milestone_bar(on: bool) -> void:
 		await get_tree().process_frame
 	if milestone_bar != bar:
 		return
-	# Under dirt per second, in the game's own column so the gap matches.
-	var dps := GM.ui.get_node_or_null(DPS_PATH)
-	if dps and dps.get_parent() is VBoxContainer:
-		bar.in_column = true
-		dps.get_parent().add_child(bar)
-		dps.get_parent().move_child(bar, dps.get_index() + 1)
-		return
+	# Under the dirt and sand counters, in the game's own column so the gap matches.
+	var column := GM.ui.get_node_or_null(DATA_PATH) as VBoxContainer
+	if column:
+		for anchor_name in DATA_ANCHORS:
+			var anchor := column.get_node_or_null(anchor_name)
+			if anchor:
+				bar.in_column = true
+				column.add_child(bar)
+				column.move_child(bar, anchor.get_index() + 1)
+				return
 	# Bottom-left of the field, or the screen corner, if the game's layout changes.
 	var parent: Node = _field()
 	if parent == null:
@@ -218,6 +219,9 @@ func _input(event: InputEvent) -> void:
 
 	if code == settings.get_value("key_stats"):
 		if !stats_tab.toggle():
+			return
+	elif code == settings.get_value("key_autopilot"):
+		if !autopilot_tab.toggle():
 			return
 	elif code == settings.get_value("key_settings"):
 		toggle_settings()

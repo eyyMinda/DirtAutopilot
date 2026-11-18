@@ -12,6 +12,7 @@ signal chest_opened
 const TIMER_STOP_AT_SEC := 0.05
 ## Same hold time as opening a relic by hand.
 const RELIC_OPEN_SEC := 1.0
+const RELIC_KNOWN_OPEN_SEC := 0.25
 ## Pause before answering a relic minigame, so it's visible what was solved.
 const MG_ANSWER_DELAY_MSEC := 500
 ## Automations that don't need frame timing run this often; inventories and
@@ -209,8 +210,10 @@ func _place_hat() -> void:
 				hm.toggle_start()
 				return
 			free[pal].on_pressed.emit()
-			hm.line_edit.text = _new_pal_name()
-			hm.toggle_confirm()
+			# With pal naming off (game option, 1.3+) the click already placed the hat.
+			if GM.name_pals_enabled:
+				hm.line_edit.text = _new_pal_name()
+				hm.toggle_confirm()
 			return
 
 
@@ -252,8 +255,10 @@ func _open_relic() -> void:
 			continue
 		if GM.inv.item_is_game(st.key) and !s.get_value("relic_mg_solve"):
 			continue
+		# 1.3+: relics found before open in 0.25 s, like the game's own hold.
+		var t := RELIC_KNOWN_OPEN_SEC if GM.badges.is_unlocked_once(st.key) else RELIC_OPEN_SEC
 		st.action_load.set_type("DIRT_AUTOPILOT").set_sell_amount(0) \
-			.set_particles_pos(st.ui_item.pos_mid / 2.0).set_time(RELIC_OPEN_SEC).start_timer()
+			.set_particles_pos(st.ui_item.pos_mid / 2.0).set_time(t).start_timer()
 		relic_opened.emit()
 		return
 

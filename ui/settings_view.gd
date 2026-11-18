@@ -5,7 +5,16 @@ extends VBoxContainer
 const Settings := preload("../core/settings.gd")
 const Icons := preload("icons.gd")
 const Hats := preload("../features/hats.gd")
+const PrestigeAuto := preload("../features/prestige_auto.gd")
 const AchievementsView := preload("achievements_view.gd")
+
+## These sections live in the Autopilot tab (ui/autopilot_view.gd), so the
+## Options page leaves them out; groups left empty by that are dropped too.
+const PANEL_SECTIONS := ["Performance", "Auto-sweeper", "Sand Mines", "Shopping", "Prestige",
+	"Relics", "Pickups", "Hats on pals", "Progress", "Items & popups"]
+## Quality of life is left with only Achievements, which needs no heading of its own.
+const PANEL_GROUPS := ["Automations", "Quality of life"]
+const PANEL_HINT := "Every feature switch is in the Autopilot tab during a run: the wheel icon at the top of the game's tab column, or the Autopilot tab hotkey below."
 
 const NEXUS_URL := "https://www.nexusmods.com/profile/eyyMinda"
 const GITHUB_URL := "https://github.com/eyyMinda"
@@ -46,20 +55,28 @@ func setup(mod_main) -> void:
 	add_theme_constant_override("separation", 6)
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
+	var skip := false
 	for e in Settings.SCHEMA:
 		if e.has("group"):
 			_target = self
 			_fold_switch = ""
-			_add_group(e.group)
+			skip = PANEL_GROUPS.has(e.group)
+			if !skip:
+				_add_group(e.group)
 		elif e.has("section"):
 			_target = self
 			_fold_switch = ""
-			if e.get("fold", false):
+			skip = PANEL_SECTIONS.has(e.section)
+			if !skip and e.get("fold", false):
 				_add_fold(e)
-			else:
+			elif !skip:
 				_add_section(e.section)
+		elif skip:
+			continue
 		elif e.has("view"):
 			call("_add_view_" + e.view)
+			if e.view == "enable_all":
+				add_child(_faint_label(PANEL_HINT, true))
 		elif e.get("hotkey", false):
 			_add_hotkey(e)
 		elif e.default is bool:
@@ -275,6 +292,26 @@ func _add_switch(e: Dictionary) -> void:
 	_rows[e.key] = {"control": b, "block": block.get_parent() if e.has("requires") else block}
 
 
+## [value, label] pairs for a dropdown setting (a hat's pals, or the unlocked worlds).
+static func choice_options(e: Dictionary) -> Array:
+	if e.get("choices", "") == "world":
+		return PrestigeAuto.world_options()
+	return Hats.options(e.hat)
+
+
+## Refills the dropdown when its options changed (worlds unlock during play).
+static func fill_choice(ob: OptionButton, options: Array) -> void:
+	var same := ob.item_count == options.size()
+	for i in mini(ob.item_count, options.size()):
+		same = same and ob.get_item_metadata(i) == options[i][0] and ob.get_item_text(i) == options[i][1]
+	if same:
+		return
+	ob.clear()
+	for o in options:
+		ob.add_item(o[1])
+		ob.set_item_metadata(ob.item_count - 1, o[0])
+
+
 func _add_choice(e: Dictionary) -> void:
 	var block := _block(e)
 	var row := HBoxContainer.new()
@@ -282,16 +319,16 @@ func _add_choice(e: Dictionary) -> void:
 	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	var hat: Dictionary = Hats.HATS[e.hat]
-	l.text = "%s (%s)" % [hat.name, hat.effect]
-	var options: Array = Hats.options(e.hat)
+	if e.has("hat"):
+		var hat: Dictionary = Hats.HATS[e.hat]
+		l.text = "%s (%s)" % [hat.name, hat.effect]
+	else:
+		l.text = e.get("label", e.key)
 	row.add_child(l)
 	var ob := OptionButton.new()
 	ob.custom_minimum_size = Vector2(150, 0)
 	ob.focus_mode = Control.FOCUS_NONE
-	for o in options:
-		ob.add_item(o[1])
-		ob.set_item_metadata(ob.item_count - 1, o[0])
+	fill_choice(ob, choice_options(e))
 	ob.item_selected.connect(func(i: int): s.set_value(e.key, ob.get_item_metadata(i)))
 	row.add_child(ob)
 	block.add_child(row)
@@ -392,6 +429,7 @@ func _refresh_all() -> void:
 			r.control.text = _switch_label(e)
 		elif e.default is String:
 			var ob: OptionButton = r.control
+			fill_choice(ob, choice_options(e))
 			ob.select(0)
 			for i in ob.item_count:
 				if ob.get_item_metadata(i) == v:

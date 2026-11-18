@@ -21,6 +21,15 @@ static func score(btn, s) -> float:
 		return 85.0
 	if node.ends_with("_GUY") and node != "FOX_GUY" and stat == "COUNT_ADD":
 		return 80.0
+	# Void tools (1.3): 5-10x dirt per tool, and they dig sand.
+	if stat == "VOID_UNLOCK":
+		return 85.0
+	if stat == "VOID_DIRT_MULTIPLY":
+		return 80.0
+	if stat == "VOID_SAND_GAIN" or stat == "VOID_SAND_CHANCE":
+		return 70.0
+	if stat.begins_with("VOID_"):
+		return 65.0
 	if node == "CURSOR":
 		return 75.0 if s.get_value("sweep_enabled") else 60.0
 	if node == "SAND":

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dirt Autopilot – in-game automation mod for Dirt Clicker</title>
-  <meta name="description" content="Free in-game mod for the Steam game Dirt Clicker. Auto-sweeps ready tools, plays the Sand Mines timer for a PERFECT, spends sand, solves relic minigames, opens relics and chests, puts hats on pals, adds a session stats tab and FPS savers for the late game.">
+  <meta name="description" content="Free in-game mod for the Steam game Dirt Clicker. Buys from the shop and skill tree, prestiges for you, Auto-sweeps ready tools, plays the Sand Mines timer for a PERFECT, spends sand, solves relic minigames, opens relics and chests, puts hats on pals, adds a session stats tab and FPS savers for the late game.">
   <link rel="canonical" href="https://eyyminda.github.io/DirtAutopilot/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Dirt Autopilot – in-game automation mod for Dirt Clicker">
@@ -266,7 +266,7 @@
       <a class="btn primary" href="https://www.nexusmods.com/dirtclicker/mods/1">Download on Nexus Mods<small>Free · works with DirtLoader or Godot Mod Loader</small></a>
       <a class="btn" id="dl" href="https://github.com/eyyMinda/DirtAutopilot/releases/latest">Download from GitHub<small id="dl-info">Same zip, latest release</small></a>
     </div>
-    <p class="note">Needs a mod loader: see <a href="#loaders">which one to pick</a>. Free (GPL-3.0).</p>
+    <p class="note">Needs Dirt Clicker 1.3.1 or newer and a mod loader: see <a href="#loaders">which one to pick</a>. Free (GPL-3.0).</p>
   </header>
 
   <main>
@@ -291,12 +291,24 @@
         <p>Grabs the coffee bean and opens chests you have the key for.</p>
       </div>
       <div class="card">
+        <h3>Shopping</h3>
+        <p>Buys from the shop and the skill tree, whatever pays for itself fastest, and saves up for something better when it's close. Skips fox pals while you're growing stacks for Full bag and Legendary bag.</p>
+      </div>
+      <div class="card">
+        <h3>Prestige</h3>
+        <p>Spends worms on the best prestige upgrade, and can prestige by itself once new upgrades are affordable and the run slows down, optionally starting the next run in the world you pick.</p>
+      </div>
+      <div class="card">
+        <h3>Autopilot tab</h3>
+        <p>Its own tab in the game (or <kbd>A</kbd>): a big AUTO-BUY switch, the next purchase with a countdown, and all the mod's switches in foldable cards, two per row.</p>
+      </div>
+      <div class="card">
         <h3>Hats on pals</h3>
-        <p>Puts each new hat on a pal it actually helps, or the pal you pick per hat. Pals get names from the game's credits, starting with Todd for the achievement.</p>
+        <p>Puts each new hat on a pal it actually helps, or the pal you pick per hat. With the game's pal naming on, pals get names from the game's credits, starting with Todd for the achievement.</p>
       </div>
       <div class="card">
         <h3>Performance</h3>
-        <p>FPS savers for the late game, with one switch for all of them: dirt and worms land on the counter at once instead of flying there, and dig effects, buff icons, stomp circles, pal names, sell amounts and new-item counts can be hidden.</p>
+        <p>FPS savers for the late game, with one switch for all of them: dig effects, buff icons, stomp circles, pal names, sell amounts and new-item counts can be hidden.</p>
       </div>
       <div class="card">
         <h3>Progress</h3>
@@ -312,7 +324,7 @@
       </div>
       <div class="card">
         <h3>Session stats</h3>
-        <p>Its own tab next to Badges in the game (or <kbd>C</kbd>): tiles with play time, dirt and worms earned, rates per hour, tools, relics, minigames, sand, coffee, chests, hats, prestiges and achievements since you started the game.</p>
+        <p>Its own tab next to Badges in the game (or <kbd>C</kbd>): tiles with play time, dirt and worms earned, rates per hour, tools, relics, minigames, sand, coffee, chests, hats, prestiges and achievements, for this run (resets on prestige) or all time (kept across launches). The Run view ranks your tools by dirt earned, with names and percentages instead of only colours. Each save slot keeps its own stats.</p>
       </div>
       <div class="card">
         <h3>Update alerts</h3>
@@ -323,8 +335,8 @@
     <h2>In the game</h2>
     <div class="gallery">
       <figure>
-        <img class="shot" src="images/performance.jpg" width="1671" height="941" loading="lazy" alt="The same late-game run at 20 FPS without the Performance options and 80 FPS with them">
-        <figcaption>Performance options: 20 FPS to 80 FPS late in the game</figcaption>
+        <img class="shot" src="images/performance.jpg" width="1671" height="941" loading="lazy" alt="The same late-game run without and with the Performance options">
+        <figcaption>Performance options late in the game</figcaption>
       </figure>
       <figure>
         <img class="shot" src="images/settings.jpg" width="1920" height="1080" loading="lazy" alt="The Dirt Autopilot tab in Options: Enable all and Disable all, the Performance card with one switch for all options, and the Automations group starting with the auto-sweeper">
@@ -367,22 +379,22 @@
           <li><b>Godot Mod Loader:</b> put the zip in <code>mods</code> as it is.</li>
         </ul>
       </li>
-      <li>Start the game and open <b>Options → Dirt Autopilot</b>. With DirtLoader, <b>Options → Mods → Settings</b> opens the same page.</li>
+      <li>Start a run and open the <b>Autopilot</b> tab (the wheel icon in the game's tab column, or <kbd>A</kbd>). Hotkeys, achievements and reset are in <b>Options → Dirt Autopilot</b>.</li>
     </ol>
 
     <h2>Hotkeys</h2>
     <table>
       <tr><td><kbd>F5</kbd></td><td>Auto-sweep on/off</td></tr>
-      <tr><td><kbd>F6</kbd></td><td>Sweep guides on/off: a dot on each ready tool, a ring where the sweeper is</td></tr>
       <tr><td><kbd>F7</kbd></td><td>Sand Mines timer on/off</td></tr>
+      <tr><td><kbd>A</kbd></td><td>Open or close the Autopilot tab</td></tr>
       <tr><td><kbd>C</kbd></td><td>Open or close the Session stats tab</td></tr>
       <tr><td><kbd>F9</kbd></td><td>Open or close the Dirt Autopilot settings</td></tr>
     </table>
-    <p class="note">To change a key, click it in the <b>Hotkeys</b> section (under <b>Setup</b>) of the settings, then press the new one. Esc cancels and Backspace removes it.</p>
+    <p class="note">To change a key, click it in the <b>Hotkeys</b> section of <b>Options → Dirt Autopilot</b>, then press the new one. Esc cancels and Backspace removes it.</p>
     <img class="shot" src="images/hotkeys.jpg" width="1920" height="1080" loading="lazy" alt="The Setup group of the Dirt Autopilot settings: Auto-sweep F5, Sweep guides F6, Sand Mines timer F7, Session stats tab C, Open these settings F9, and Reset all settings">
 
     <h2>What's on from the start</h2>
-    <p>Most features are off until you switch them on. These start on: <b>sweep guides</b>, <b>spending sand</b>, <b>legendary protection</b>, <b>hats on pals</b>, the <b>next-milestone bar</b> and the <b>prestige alert</b>. <b>Enable all</b> and <b>Disable all</b> at the top of the settings switch every feature at once; the Performance options have their own switch.</p>
+    <p>Most features are off until you switch them on. These start on: <b>spending sand</b>, <b>legendary protection</b>, <b>hats on pals</b>, the <b>next-milestone bar</b> and the <b>prestige alert</b>. <b>Enable all</b> and <b>Disable all</b> at the top of the settings switch every feature at once; the Performance options have their own switch.</p>
 
     <h2>Questions</h2>
     <details>
@@ -407,7 +419,7 @@
     </details>
     <details>
       <summary>The game gets slow late in a run.</summary>
-      <p>Open the <b>Performance</b> card at the top of the settings and switch on <b>All performance options</b>, or pick them one by one: <b>Skip flying dirt and worms</b> helps the most, and hiding buff icons is next. Turning off the game's own CRT effect in Options and the mod's sweep guides (<kbd>F6</kbd>) helps too.</p>
+      <p>Open the <b>Display</b> card in the Autopilot tab and switch the performance options on, or pick them one by one; hiding buff icons helps the most. Turning off the game's own <b>Particles</b> and CRT effect in Options helps too.</p>
     </details>
     <details>
       <summary>Where are my settings? How do I uninstall?</summary>
