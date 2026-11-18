@@ -2,7 +2,7 @@
 
 An in-game automation helper for **Dirt Clicker**. Website: [eyyminda.github.io/DirtAutopilot](https://eyyminda.github.io/DirtAutopilot/) · Download: [Nexus Mods](https://www.nexusmods.com/dirtclicker/mods/1) or [GitHub releases](https://github.com/eyyMinda/DirtAutopilot/releases/latest). Unofficial and fan-made; not affiliated with the developers of Dirt Clicker.
 
-![Dirt Autopilot in a run: the prestige alert naming the best buy, the Sand Mines timer stopped at 00.00 for a PERFECT, and the next-milestone bar under dirt per second](docs/images/main.jpg)
+![Dirt Autopilot in a run: the Autopilot tab with AUTO-BUY, the next purchases and Just bought, plus the prestige alert](docs/images/main.jpg)
 
 Most features are **off until you switch them on**, in the **Autopilot** tab of the game's tab column (or **A**). On from the start: spending sand, legendary protection, putting hats on pals, the next-milestone bar and the prestige alert.
 
@@ -32,10 +32,10 @@ Performance, Hats on pals and Achievements are cards you can fold away; their sw
 
 | | |
 | --- | --- |
-| ![The same late-game run without and with the Performance options](docs/images/performance.jpg) | ![The Dirt Autopilot tab in Options: Enable all and Disable all, the Performance card and the Automations group](docs/images/settings.jpg) |
-| **Performance** options late in the game | **Options → Dirt Autopilot** |
-| ![The Quality of life group: next milestone, prestige alert, legendary protection, popup skipping and the Achievements card](docs/images/qol.jpg) | ![The Session stats tab with its C hotkey, and the prestige alert naming the best buy](docs/images/session-stats.jpg) |
-| **Quality of life** | **Session stats tab** and the prestige alert |
+| ![The same late-game run without and with the Performance options](docs/images/performance.jpg) | ![The Autopilot Display card open: milestones, prestige alert, legendary protection, popup skips and the Hide performance chips](docs/images/display.jpg) |
+| **Performance** options late in the game | **Display** card in the Autopilot tab |
+| ![The Session stats tab open next to the play field](docs/images/stats.jpg) | ![Options → Dirt Autopilot: Enable all, the Achievements card and Hotkeys](docs/images/settings.jpg) |
+| **Session stats** tab | **Options → Dirt Autopilot** |
 
 ## Install
 
@@ -44,9 +44,9 @@ Dirt Autopilot needs Dirt Clicker 1.3.1 or newer and a mod loader. It works with
 1. Install your mod loader by following its own instructions.
 2. Download `eyyMinda-DirtAutopilot-<version>.zip` from the [latest release](https://github.com/eyyMinda/DirtAutopilot/releases/latest).
 3. Put the mod where your loader looks for mods:
-   - **Godot Mod Loader:** put the `.zip` as-is in `<game folder>\mods\`.
-   - **DirtLoader:** extract the zip into `<game folder>\mods\`, so you get `<game folder>\mods\eyyMinda-DirtAutopilot\`.
-4. Start a run and open the **Autopilot** tab (the wheel icon in the game's tab column, or **A**). Hotkeys, achievements and reset are in **Options → Dirt Autopilot** (with DirtLoader also **Options → Mods → Settings**).
+   - **DirtLoader** by SleepyZx3: extract the zip into `<game folder>\mods\`, so you get `<game folder>\mods\eyyMinda-DirtAutopilot\`.
+   - **Godot Mod Loader** by KonoTyran: put the `.zip` as-is in `<game folder>\mods\`.
+4. Start the game and open **Options → Dirt Autopilot**. With DirtLoader, **Options → Mods → Settings** opens the same page. During a run, the **Autopilot** tab (wheel icon, or **A**) holds every feature switch.
 
 ## Hotkeys
 
@@ -60,7 +60,7 @@ Dirt Autopilot needs Dirt Clicker 1.3.1 or newer and a mod loader. It works with
 
 To change a key, click it in the **Hotkeys** section of **Options → Dirt Autopilot**, then press the new one. Esc cancels and Backspace removes it.
 
-![The Setup group: hotkeys and Reset all settings](docs/images/hotkeys.jpg)
+![Options → Dirt Autopilot: Enable all, Achievements and Hotkeys](docs/images/settings.jpg)
 
 ## Good to know
 

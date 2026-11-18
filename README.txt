@@ -5,36 +5,26 @@ An automation and quality-of-life mod for Dirt Clicker.
 Needs Dirt Clicker 1.3.1 or newer, and a mod loader.
 
 
-What you need
--------------
-Install ONE of these loaders first (follow that loader's own instructions):
-
-  - DirtLoader
-      https://www.nexusmods.com/games/dirtclicker/mods
-
-  - Godot Mod Loader
-      https://github.com/GodotModding/godot-mod-loader
-
-Dirt Autopilot works with either.
-
-
 Install
 -------
-1. Install your mod loader.
+1. Install your mod loader by following its own instructions.
 2. Download eyyMinda-DirtAutopilot-<version>.zip.
 3. Put the mod where your loader looks for mods:
 
-   DirtLoader:
+   DirtLoader by SleepyZx3:
      Extract the zip into <game folder>\mods\
      so you get <game folder>\mods\eyyMinda-DirtAutopilot\
 
-   Godot Mod Loader:
+   Godot Mod Loader by KonoTyran:
      Put the zip as-is into <game folder>\mods\
      (do not extract it)
 
-4. Start a run and open the Autopilot tab (wheel icon, or press A).
-   Hotkeys, achievements and reset are in Options -> Dirt Autopilot.
-   With DirtLoader you can also use Options -> Mods -> Settings.
+4. Start the game and open Options -> Dirt Autopilot.
+   With DirtLoader, Options -> Mods -> Settings opens the same page.
+   During a run, the Autopilot tab (wheel icon, or A) holds every switch.
+
+DirtLoader:        https://www.nexusmods.com/games/dirtclicker/mods
+Godot Mod Loader:  https://github.com/GodotModding/godot-mod-loader
 
 
 Uninstall
