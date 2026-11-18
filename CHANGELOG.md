@@ -2,6 +2,7 @@
 
 ## 1.2.0
 - **Shopping:** buys from the shop and the skill tree by itself, picking whatever pays for itself fastest based on what each tool earns this run. It saves up when something better is less than 30 s away, and favours finishing a set of three for void tools. Off by default.
+- Release zip includes a plain **README.txt** with install steps for DirtLoader and the Godot Mod Loader.
 - **Skip fox pals for now:** no fox pals or fox upgrades while Full bag or Legendary bag is still missing (on by default). **Buy hats** is optional and waits until the last hat has found a pal.
 - **Prestige upgrades:** spends worms on the advisor's BEST pick whenever you can afford it. **Prestige by itself** (off by default) prestiges once new upgrades are affordable and the run slows down. The prestige tree then waits for you, unless **Start the next run by itself** is on: then it presses Play in the world you pick (by default the latest unlocked one before the Void).
 - **Autopilot tab:** next to Session stats in the game's tab column (or **A**): a big AUTO-BUY switch, the next purchase with a countdown and payback time, the queue after it and prestige status, with the shop options, the next buys and what was just bought in one card, then the other settings grouped into four foldable cards of two-column switches (hotkeys, achievements and reset stay in Options).
